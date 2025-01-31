@@ -33,20 +33,25 @@ Input
 
     color_obj = create_first_color_obj(
             number_of_color_samples=number_of_color_samples)
-    print(f'{color_obj.to_web_safe_color()=}')
-
-    xl_color = color_obj.to_web_safe_color()[1:]
-
-    pattern_fill = PatternFill(
-            patternType='solid',
-            fgColor=xl_color)
 
     for row_th in range(2, 2 + number_of_color_samples):
+
+        print(f'{color_obj.to_web_safe_color()=}')
+        xl_color = color_obj.to_web_safe_color()[1:]
+        pattern_fill = PatternFill(
+                patternType='solid',
+                fgColor=xl_color)
+
         cell = ws[f'B{row_th}']
         cell.fill = pattern_fill
 
         cell = ws[f'C{row_th}']
         cell.value = xl_color
+
+        color_obj = create_next_color_obj(
+                previous_color=color_obj,
+                number_of_color_samples=number_of_color_samples)
+
 
     wb.save('./temp/hello.xlsx')
 
@@ -93,6 +98,10 @@ def create_first_color_obj(number_of_color_samples):
     high_scalar = mid_scalar + saturation
 
     print(f"""\
+{freedom_qty=}
+{half_freedom_qty=}
+{min_base_scalar=}
+{max_base_scalar=}
 {mid_scalar=}
 {saturation=}
 {low_scalar=}
@@ -100,6 +109,12 @@ def create_first_color_obj(number_of_color_samples):
     
     return Color(low_scalar, high_scalar, mid_scalar)
     #color = Color(0xFF, 0x66, 0x00)
+
+
+def create_next_color_obj(previous_color, number_of_color_samples):
+    """次の色を算出
+    """
+    return previous_color
 
 
 ##########################
