@@ -31,12 +31,30 @@ Input
     # ワークシート
     ws = wb['Sheet']
 
-    color_obj = create_first_color_obj(
+    low, high = create_tone(
             number_of_color_samples=number_of_color_samples)
+    
+    # 色相 [0.0, 1.0]
+    cur_hue = random.uniform(0, 1)
+    step_hue = 1 / number_of_color_samples
+
 
     for row_th in range(2, 2 + number_of_color_samples):
 
-        print(f'{color_obj.to_web_safe_color()=}')
+        tone_system = ToneSystem(
+                low=low,
+                high=high,
+                hue=cur_hue)
+        print(f"""\
+{low=}
+{high=}
+{cur_hue=}
+{step_hue=}""")
+
+        color_obj = Color(tone_system.get_red(), tone_system.get_green(), tone_system.get_blue())
+        print(f"""\
+{color_obj.to_web_safe_color()=}""")
+    
         xl_color = color_obj.to_web_safe_color()[1:]
         pattern_fill = PatternFill(
                 patternType='solid',
@@ -48,16 +66,16 @@ Input
         cell = ws[f'C{row_th}']
         cell.value = xl_color
 
-        color_obj = create_next_color_obj(
-                previous_color=color_obj,
-                number_of_color_samples=number_of_color_samples)
+        cur_hue += step_hue
+        if 1 < cur_hue:
+            cur_hue -= 1
 
 
     wb.save('./temp/hello.xlsx')
 
 
-def create_first_color_obj(number_of_color_samples):
-    """基準となる最初の１色を決めます。
+def create_tone(number_of_color_samples):
+    """色調を１つに決めます。
 
     Parameters
     ----------
@@ -95,14 +113,6 @@ def create_first_color_obj(number_of_color_samples):
     low = mid_scalar - saturation
     high = mid_scalar + saturation
 
-    # 色相 [0.0, 1.0]
-    hue = random.uniform(0, 1)
-
-    tone_system = ToneSystem(
-            low=low,
-            high=high,
-            hue=hue)
-
     print(f"""\
 {freedom_qty=}
 {half_freedom_qty=}
@@ -111,29 +121,9 @@ def create_first_color_obj(number_of_color_samples):
 {mid_scalar=}
 {saturation=}
 {low=}
-{high=}
-{hue=}""")
-    
-    return Color(tone_system.get_red(), tone_system.get_green(), tone_system.get_blue())
-    #color = Color(0xFF, 0x66, 0x00)
+{high=}""")
 
-
-def create_next_color_obj(previous_color, number_of_color_samples):
-    """次の色を算出
-
-    初期状態を、以下の通りとする：
-        （１）G値、B値が下限スカラーであり、R値は上限スカラーだ。
-            つまり赤
-
-    できること：
-        （１）B値が下限彩度なら、R値を上限彩度まで増やす
-            赤系
-        （２）R値が上限彩度なら、G値を下限彩度まで減らす
-        （３）G値が下限彩度なら、B値を上限彩度まで増やす
-        （４）B値が上限彩度なら、R値を下限彩度まで減らす
-        （５）G値が下限彩度なら、B値を上限彩度まで増やす
-    """
-    return previous_color
+    return low, high
 
 
 ##########################
