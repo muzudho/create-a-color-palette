@@ -7,6 +7,9 @@ from openpyxl.styles import PatternFill
 from src.create_color_pallete import Color
 
 
+MAX_scalar = 255
+
+
 def main():
     message = """\
 作りたい色の数を入力してください。
@@ -19,7 +22,7 @@ Input
 -----
 """
     line = input(message)
-    number_of_color = int(line)
+    number_of_color_samples = int(line)
 
 
     # ワークブックを新規生成
@@ -28,7 +31,8 @@ Input
     # ワークシート
     ws = wb['Sheet']
 
-    color_obj = create_first_color_obj()
+    color_obj = create_first_color_obj(
+            number_of_color_samples=number_of_color_samples)
     print(f'{color_obj.to_web_safe_color()=}')
 
     xl_color = color_obj.to_web_safe_color()[1:]
@@ -37,7 +41,7 @@ Input
             patternType='solid',
             fgColor=xl_color)
 
-    for row_th in range(2, 2+number_of_color):
+    for row_th in range(2, 2 + number_of_color_samples):
         cell = ws[f'B{row_th}']
         cell.fill = pattern_fill
 
@@ -47,20 +51,54 @@ Input
     wb.save('./temp/hello.xlsx')
 
 
-def create_first_color_obj():
+def create_first_color_obj(number_of_color_samples):
     """基準となる最初の１色を決めます。
+
+    Parameters
+    ----------
+    number_of_color_samples : int
+        色の標本数
     """
 
-    # とりあえず、モノクロは避けるとします。
+    # NOTE ウェブ・セーフ・カラーは、暗い色の幅が多めに取られています。 0～255 のうち、 180 ぐらいまで暗い色です。
 
-    # RGB値の下限をとりあえず決めます
-    low = random.randrange(0, 240)
-    # RGB値の上限をとりあえず決めます
-    high = random.randrange(low, 255)
-    # low と high の中間
-    middle = math.floor((low + high) / 2)
+    # NOTE 色の標本数が多くなると、 low, high は極端にできません。変化の幅が狭まってしまいます。
+    # number_of_color_samples は 1 以上の整数とします。
+    if number_of_color_samples == 1:
+        # １色しか標本がないのなら、基準色は、色バーの全部が使えます
+        freedom_qty = MAX_scalar
+    else:
+        # ２色しか標本がないのなら、基準色は、控えめに色バーの半分だけ使うことにします
+        freedom_qty = MAX_scalar // number_of_color_samples
+
+    half_freedom_qty = freedom_qty // 2
+
+    # 基準彩度の下限
+    min_base_scalar = half_freedom_qty
+    # 基準彩度の上限
+    max_base_scalar = MAX_scalar - half_freedom_qty
+
+    # とりあえず基準彩度の中間点は、幅の間でランダムに決めます
+    mid_scalar = random.randrange(min_base_scalar, max_base_scalar)
+
+    # 彩度の下限と上限を決めると、だいたい彩度が決まります。
+    # グレーに近づけたければ彩度を小さく、ビビッドに近づけたければ彩度を大きくします。
+    # 彩度
+    # NOTE モノクロに近づくと、標本数が多くなると、色の違いを出しにくいです。
+    #saturation = random.randrange(0, freedom_qty)
+    saturation = freedom_qty
+
+    # 彩度の下限
+    low_scalar = mid_scalar - saturation
+    high_scalar = mid_scalar + saturation
+
+    print(f"""\
+{mid_scalar=}
+{saturation=}
+{low_scalar=}
+{high_scalar=}""")
     
-    return Color(low, high, middle)
+    return Color(low_scalar, high_scalar, mid_scalar)
     #color = Color(0xFF, 0x66, 0x00)
 
 
