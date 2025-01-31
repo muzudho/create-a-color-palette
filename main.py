@@ -4,7 +4,7 @@ import random
 import traceback
 
 from openpyxl.styles import PatternFill
-from src.create_color_pallete import Color
+from src.create_color_pallete import Color, ToneSystem
 
 
 MAX_scalar = 255
@@ -113,6 +113,18 @@ def create_first_color_obj(number_of_color_samples):
 
 def create_next_color_obj(previous_color, number_of_color_samples):
     """次の色を算出
+
+    初期状態を、以下の通りとする：
+        （１）G値、B値が下限スカラーであり、R値は上限スカラーだ。
+            つまり赤
+
+    できること：
+        （１）B値が下限彩度なら、R値を上限彩度まで増やす
+            赤系
+        （２）R値が上限彩度なら、G値を下限彩度まで減らす
+        （３）G値が下限彩度なら、B値を上限彩度まで増やす
+        （４）B値が上限彩度なら、R値を下限彩度まで減らす
+        （５）G値が下限彩度なら、B値を上限彩度まで増やす
     """
     return previous_color
 
