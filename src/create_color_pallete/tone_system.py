@@ -4,6 +4,8 @@ import math
 class ToneSystem():
     """色相システム
 
+    NOTE RGB値の下限と上限を決めると、その幅の長さの長短がだいたい彩度になります。グレーに近づけたければその幅（彩度）を小さく、ビビッドに近づけたければその幅（彩度）を大きくします。
+
     状態は大きく分けて、以下の６つある：
         （０）［赤～黄相］R値が最高、B値が最低であり、G値は最低 ～ 最高 - 1 のいずれかだ。
                   Low        High
@@ -117,15 +119,18 @@ class ToneSystem():
         return 6
 
 
-    def __init__(self, low, high, value):
+    def __init__(self, low, high, hue):
         """
         Parameters
+        ----------
         high : int
             high はその数を含みません。
+        hue : float
+            色相。[0.0, 1.0]
         """
         self._low = low
         self._high = high
-        self._value = value
+        self._hue = hue
 
 
     @property
@@ -144,37 +149,37 @@ class ToneSystem():
 
 
     @property
-    def value(self):
-        if self._value < 0 or 1 <= self._value:
-            raise ValueError(f"[0,1) である必要があります。 {self._value=}")
+    def hue(self):
+        if self._hue < 0 or 1 <= self._hue:
+            raise ValueError(f"[0,1) である必要があります。 {self._hue=}")
 
-        return self._value
+        return self._hue
 
 
     def get_phase(self):
         """色相の６分類を返す
         """
-        if self.value < 1 / ToneSystem.PHASE_NUM:
+        if self.hue < 1 / ToneSystem.PHASE_NUM:
             return ToneSystem.RED_TO_YELLOW
 
-        if self.value < 2 / ToneSystem.PHASE_NUM:
+        if self.hue < 2 / ToneSystem.PHASE_NUM:
             return ToneSystem.YELLOW_TO_GREEN
 
-        if self.value < 3 / ToneSystem.PHASE_NUM:
+        if self.hue < 3 / ToneSystem.PHASE_NUM:
             return ToneSystem.GREEN_TO_CYAN
 
-        if self.value < 4 / ToneSystem.PHASE_NUM:
+        if self.hue < 4 / ToneSystem.PHASE_NUM:
             return ToneSystem.CYAN_TO_BLUE
 
-        if self.value < 5 / ToneSystem.PHASE_NUM:
+        if self.hue < 5 / ToneSystem.PHASE_NUM:
             return ToneSystem.BLUE_TO_MAGENTA
 
         return ToneSystem.MAGENTA_TO_RED
 
 
-    def get_value_in_phase(self):
+    def get_hue_in_phase(self):
         phase = self.get_phase()
-        return self.value - phase * (1 / ToneSystem.PHASE_NUM)
+        return self.hue - phase * (1 / ToneSystem.PHASE_NUM)
 
 
     def get_red(self):
@@ -184,8 +189,8 @@ class ToneSystem():
             return 255
 
         if phase == ToneSystem.YELLOW_TO_GREEN:
-            value_in_phase = self.get_value_in_phase()
-            return self.saturation - math.ceil(value_in_phase * self.saturation)
+            hue_in_phase = self.get_hue_in_phase()
+            return self.saturation - math.ceil(hue_in_phase * self.saturation)
 
         if phase == ToneSystem.GREEN_TO_CYAN:
             return 0
@@ -194,8 +199,8 @@ class ToneSystem():
             return 0
 
         if phase == ToneSystem.BLUE_TO_MAGENTA:
-            value_in_phase = self.get_value_in_phase()
-            return math.ceil(value_in_phase * self.saturation)
+            hue_in_phase = self.get_hue_in_phase()
+            return math.ceil(hue_in_phase * self.saturation)
 
         return 255
 
@@ -204,8 +209,8 @@ class ToneSystem():
         phase = self.get_phase()
 
         if phase == ToneSystem.RED_TO_YELLOW:
-            value_in_phase = self.get_value_in_phase()
-            return math.ceil(value_in_phase * self.saturation)
+            hue_in_phase = self.get_hue_in_phase()
+            return math.ceil(hue_in_phase * self.saturation)
 
         if phase == ToneSystem.YELLOW_TO_GREEN:
             return 255
@@ -214,8 +219,8 @@ class ToneSystem():
             return 255
 
         if phase == ToneSystem.CYAN_TO_BLUE:
-            value_in_phase = self.get_value_in_phase()
-            return self.saturation - math.ceil(value_in_phase * self.saturation)
+            hue_in_phase = self.get_hue_in_phase()
+            return self.saturation - math.ceil(hue_in_phase * self.saturation)
 
         if phase == ToneSystem.BLUE_TO_MAGENTA:
             return 0
@@ -233,8 +238,8 @@ class ToneSystem():
             return 0
 
         if phase == ToneSystem.GREEN_TO_CYAN:
-            value_in_phase = self.get_value_in_phase()
-            return math.ceil(value_in_phase * self.saturation)
+            hue_in_phase = self.get_hue_in_phase()
+            return math.ceil(hue_in_phase * self.saturation)
 
         if phase == ToneSystem.CYAN_TO_BLUE:
             return 255
@@ -242,5 +247,5 @@ class ToneSystem():
         if phase == ToneSystem.BLUE_TO_MAGENTA:
             return 255
 
-        value_in_phase = self.get_value_in_phase()
-        return self.saturation - math.ceil(value_in_phase * self.saturation)
+        hue_in_phase = self.get_hue_in_phase()
+        return self.saturation - math.ceil(hue_in_phase * self.saturation)

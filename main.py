@@ -86,16 +86,22 @@ def create_first_color_obj(number_of_color_samples):
     # とりあえず基準彩度の中間点は、幅の間でランダムに決めます
     mid_scalar = random.randrange(min_base_scalar, max_base_scalar)
 
-    # 彩度の下限と上限を決めると、だいたい彩度が決まります。
-    # グレーに近づけたければ彩度を小さく、ビビッドに近づけたければ彩度を大きくします。
     # 彩度
     # NOTE モノクロに近づくと、標本数が多くなると、色の違いを出しにくいです。
     #saturation = random.randrange(0, freedom_qty)
     saturation = freedom_qty
 
     # 彩度の下限
-    low_scalar = mid_scalar - saturation
-    high_scalar = mid_scalar + saturation
+    low = mid_scalar - saturation
+    high = mid_scalar + saturation
+
+    # 色相 [0.0, 1.0]
+    hue = random.uniform(0, 1)
+
+    tone_system = ToneSystem(
+            low=low,
+            high=high,
+            hue=hue)
 
     print(f"""\
 {freedom_qty=}
@@ -104,10 +110,11 @@ def create_first_color_obj(number_of_color_samples):
 {max_base_scalar=}
 {mid_scalar=}
 {saturation=}
-{low_scalar=}
-{high_scalar=}""")
+{low=}
+{high=}
+{hue=}""")
     
-    return Color(low_scalar, high_scalar, mid_scalar)
+    return Color(tone_system.get_red(), tone_system.get_green(), tone_system.get_blue())
     #color = Color(0xFF, 0x66, 0x00)
 
 
