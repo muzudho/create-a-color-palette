@@ -2,6 +2,7 @@ import openpyxl as xl
 import traceback
 
 from openpyxl.styles import PatternFill
+from src.create_color_pallete import Color
 
 
 def main():
@@ -25,7 +26,7 @@ Input
     # ワークシート
     ws = wb['Sheet']
 
-    xl_color = 'FF6600'
+    xl_color = create_first_color()
 
     pattern_fill = PatternFill(
             patternType='solid',
@@ -39,6 +40,16 @@ Input
         cell.value = xl_color
 
     wb.save('./temp/hello.xlsx')
+
+
+def create_first_color():
+    """最初の１色を決めます。
+    """
+    color = Color(0xFF, 0x66, 0x00)
+    web_safe_color = color.to_web_safe_color()[1:]
+    print(f'{web_safe_color=}')
+    return web_safe_color
+
 
 ##########################
 # MARK: コマンドから実行時
