@@ -39,6 +39,19 @@ Input
     step_hue = 1 / number_of_color_samples
 
 
+    cell = ws[f'A1']
+    cell.value = "色相"
+
+    cell = ws[f'B1']
+    cell.value = "色相内段階"
+
+    cell = ws[f'C1']
+    cell.value = "色"
+
+    cell = ws[f'D1']
+    cell.value = "コード"
+
+
     for row_th in range(2, 2 + number_of_color_samples):
 
         tone_system = ToneSystem(
@@ -55,16 +68,24 @@ Input
         print(f"""\
 {color_obj.to_web_safe_color()=}""")
     
-        xl_color = color_obj.to_web_safe_color()[1:]
+        web_safe_color = color_obj.to_web_safe_color()
+        xl_color = web_safe_color[1:]
+        print(f'{xl_color=}')
         pattern_fill = PatternFill(
                 patternType='solid',
                 fgColor=xl_color)
 
+        cell = ws[f'A{row_th}']
+        cell.value = cur_hue
+
         cell = ws[f'B{row_th}']
-        cell.fill = pattern_fill
+        cell.value = tone_system.get_value_of_hue_in_phase()
 
         cell = ws[f'C{row_th}']
-        cell.value = xl_color
+        cell.fill = pattern_fill
+
+        cell = ws[f'D{row_th}']
+        cell.value = web_safe_color
 
         cur_hue += step_hue
         if 1 < cur_hue:
@@ -110,8 +131,8 @@ def create_tone(number_of_color_samples):
     saturation = freedom_qty
 
     # 彩度の下限
-    low = mid_scalar - saturation
-    high = mid_scalar + saturation
+    low = 0 #mid_scalar - saturation
+    high = 256 #mid_scalar + saturation
 
     print(f"""\
 {freedom_qty=}
