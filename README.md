@@ -10,5 +10,5 @@
 ## 実行手順
 
 ```shell
-py main.py
+py gradation.py
 ```

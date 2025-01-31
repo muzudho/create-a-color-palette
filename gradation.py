@@ -133,7 +133,7 @@ Input
             cur_hue -= 1
 
 
-    file_path_to_write = './temp/hello.xlsx'
+    file_path_to_write = './temp/gradation.xlsx'
     wb.save(file_path_to_write)
     print(f"Please look 📄［{file_path_to_write}］ file.")
 
