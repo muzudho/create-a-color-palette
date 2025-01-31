@@ -1,6 +1,7 @@
 # Create a color pallete
 temp/*
 !temp/.gitkeep
+private/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
