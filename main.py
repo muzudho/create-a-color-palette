@@ -25,6 +25,21 @@ Input
     number_of_color_samples = int(line)
 
 
+    message = """\
+彩度を 0 以上 255 以下の整数で入力してください。
+0 に近いほどグレー、255 に近いほどビビッドに近づきます。
+
+Example
+-------
+180
+
+Input
+-----
+"""
+    line = input(message)
+    saturation = int(line)
+
+
     # ワークブックを新規生成
     wb = xl.Workbook()
 
@@ -32,7 +47,8 @@ Input
     ws = wb['Sheet']
 
     low, high = create_tone(
-            number_of_color_samples=number_of_color_samples)
+            number_of_color_samples=number_of_color_samples,
+            saturation=saturation)
     
     # 色相 [0.0, 1.0]
     cur_hue = random.uniform(0, 1)
@@ -102,21 +118,21 @@ Input
     wb.save('./temp/hello.xlsx')
 
 
-def create_tone(number_of_color_samples):
+def create_tone(number_of_color_samples, saturation):
     """色調を１つに決めます。
 
     Parameters
     ----------
     number_of_color_samples : int
         色の標本数
+    saturation : int
+        彩度。[0, 255] の整数
+        NOTE モノクロに近づくと、標本数が多くなると、色の違いを出しにくいです。
     """
 
     # NOTE ウェブ・セーフ・カラーは、暗い色の幅が多めに取られています。 0～255 のうち、 180 ぐらいまで暗い色です。
     # NOTE 色の標本数が多くなると、 low, high は極端にできません。変化の幅が狭まってしまいます。
 
-    # 彩度
-    # NOTE モノクロに近づくと、標本数が多くなると、色の違いを出しにくいです。
-    saturation = random.randrange(0, MAX_scalar)
     # 下限
     low = random.randrange(0, MAX_scalar - saturation)
     # 上限
