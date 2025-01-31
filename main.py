@@ -25,12 +25,18 @@ Input
     # ワークシート
     ws = wb['Sheet']
 
+    xl_color = 'FF6600'
+
     pattern_fill = PatternFill(
             patternType='solid',
-            fgColor='FF6600')
+            fgColor=xl_color)
 
-    cell = ws[f'B2']
-    cell.fill = pattern_fill
+    for row_th in range(2, 2+number_of_color):
+        cell = ws[f'B{row_th}']
+        cell.fill = pattern_fill
+
+        cell = ws[f'C{row_th}']
+        cell.value = xl_color
 
     wb.save('./temp/hello.xlsx')
 
