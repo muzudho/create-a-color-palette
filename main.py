@@ -41,12 +41,12 @@ Input
 
 
     message = f"""\
-明度を {MAX_scalar - saturation} 以上 {MAX_scalar} 以下の整数で入力してください。
+明度を {saturation} 以上 {MAX_scalar} 以下の整数で入力してください。
 0 に近いほど黒、{MAX_scalar} に近いほど白に近づきます。
 
 Example
 -------
-{MAX_scalar - saturation + (saturation // 2)}
+{saturation}
 
 Input
 -----
@@ -62,7 +62,6 @@ Input
     ws = wb['Sheet']
 
     low, high = create_tone(
-            number_of_color_samples=number_of_color_samples,
             saturation=saturation,
             brightness=brightness)
     
@@ -106,10 +105,13 @@ Input
     
         web_safe_color = color_obj.to_web_safe_color()
         xl_color = web_safe_color[1:]
-        # print(f'{xl_color=}')
-        pattern_fill = PatternFill(
-                patternType='solid',
-                fgColor=xl_color)
+        try:
+            pattern_fill = PatternFill(
+                    patternType='solid',
+                    fgColor=xl_color)
+        except:
+            print(f'{xl_color=}')
+            raise
 
         cell = ws[f'A{row_th}']
         cell.value = cur_hue
@@ -131,16 +133,16 @@ Input
             cur_hue -= 1
 
 
-    wb.save('./temp/hello.xlsx')
+    file_path_to_write = './temp/hello.xlsx'
+    wb.save(file_path_to_write)
+    print(f"Please look 📄［{file_path_to_write}］ file.")
 
 
-def create_tone(number_of_color_samples, saturation, brightness):
+def create_tone(saturation, brightness):
     """色調を１つに決めます。
 
     Parameters
     ----------
-    number_of_color_samples : int
-        色の標本数
     saturation : int
         彩度。[0, 255] の整数
         NOTE モノクロに近づくと、標本数が多くなると、色の違いを出しにくいです。
@@ -156,10 +158,12 @@ def create_tone(number_of_color_samples, saturation, brightness):
     # 下限
     low = brightness - saturation
 
-#     print(f"""\
-# {saturation=}
-# {low=}
-# {high=}""")
+    if 255 < high:
+        raise ValueError(f'{high=} Others: {brightness=} {saturation=}')
+
+    if low < 0:
+        raise ValueError(f'{low=} Others: {brightness=} {saturation=}')
+
 
     return low, high
 

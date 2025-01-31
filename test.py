@@ -7,18 +7,18 @@ def test():
     low = 0
     high = 256
     print(f"""\
-Low High Value Phase   R   G   B
---- ---- ----- ----- --- --- ---""")
+Low High Hue Phase   R   G   B
+--- ---- --- ----- --- --- ---""")
 
-    for big_value in range(0,100):
-        value = big_value / 100
+    for big_hue in range(0,100):
+        hue = big_hue / 100
         tone_system = ToneSystem(
                 low=low,
                 high=high,
-                value=value)
+                hue=hue)
 
         print(f"""\
-{low:3} {high:4} {value:<5} {tone_system.get_phase():5} {tone_system.get_red():3} {tone_system.get_green():3} {tone_system.get_blue():3}""")
+{low:3} {high:4} {hue:<3} {tone_system.get_phase():5} {tone_system.get_red():3} {tone_system.get_green():3} {tone_system.get_blue():3}""")
 
 
 ##########################
