@@ -37,18 +37,23 @@ Input
     # 色相 [0.0, 1.0]
     cur_hue = random.uniform(0, 1)
     step_hue = 1 / number_of_color_samples
+    print(f"""\
+{step_hue=}""")
 
 
     cell = ws[f'A1']
     cell.value = "色相"
 
     cell = ws[f'B1']
-    cell.value = "色相内段階"
+    cell.value = "色相種類"
 
     cell = ws[f'C1']
-    cell.value = "色"
+    cell.value = "色相内段階"
 
     cell = ws[f'D1']
+    cell.value = "色"
+
+    cell = ws[f'E1']
     cell.value = "コード"
 
 
@@ -58,19 +63,18 @@ Input
                 low=low,
                 high=high,
                 hue=cur_hue)
-        print(f"""\
-{low=}
-{high=}
-{cur_hue=}
-{step_hue=}""")
+#         print(f"""\
+# {low=}
+# {high=}
+# {cur_hue=}""")
 
         color_obj = Color(tone_system.get_red(), tone_system.get_green(), tone_system.get_blue())
-        print(f"""\
-{color_obj.to_web_safe_color()=}""")
+#         print(f"""\
+# {color_obj.to_web_safe_color()=}""")
     
         web_safe_color = color_obj.to_web_safe_color()
         xl_color = web_safe_color[1:]
-        print(f'{xl_color=}')
+        # print(f'{xl_color=}')
         pattern_fill = PatternFill(
                 patternType='solid',
                 fgColor=xl_color)
@@ -79,12 +83,15 @@ Input
         cell.value = cur_hue
 
         cell = ws[f'B{row_th}']
-        cell.value = tone_system.get_value_of_hue_in_phase()
+        cell.value = tone_system.get_phase_name()
 
         cell = ws[f'C{row_th}']
-        cell.fill = pattern_fill
+        cell.value = tone_system.get_value_of_hue_in_phase()
 
         cell = ws[f'D{row_th}']
+        cell.fill = pattern_fill
+
+        cell = ws[f'E{row_th}']
         cell.value = web_safe_color
 
         cur_hue += step_hue
@@ -105,41 +112,17 @@ def create_tone(number_of_color_samples):
     """
 
     # NOTE ウェブ・セーフ・カラーは、暗い色の幅が多めに取られています。 0～255 のうち、 180 ぐらいまで暗い色です。
-
     # NOTE 色の標本数が多くなると、 low, high は極端にできません。変化の幅が狭まってしまいます。
-    # number_of_color_samples は 1 以上の整数とします。
-    if number_of_color_samples == 1:
-        # １色しか標本がないのなら、基準色は、色バーの全部が使えます
-        freedom_qty = MAX_scalar
-    else:
-        # ２色しか標本がないのなら、基準色は、控えめに色バーの半分だけ使うことにします
-        freedom_qty = MAX_scalar // number_of_color_samples
-
-    half_freedom_qty = freedom_qty // 2
-
-    # 基準彩度の下限
-    min_base_scalar = half_freedom_qty
-    # 基準彩度の上限
-    max_base_scalar = MAX_scalar - half_freedom_qty
-
-    # とりあえず基準彩度の中間点は、幅の間でランダムに決めます
-    mid_scalar = random.randrange(min_base_scalar, max_base_scalar)
 
     # 彩度
     # NOTE モノクロに近づくと、標本数が多くなると、色の違いを出しにくいです。
-    #saturation = random.randrange(0, freedom_qty)
-    saturation = freedom_qty
-
-    # 彩度の下限
-    low = 0 #mid_scalar - saturation
-    high = 256 #mid_scalar + saturation
+    saturation = random.randrange(0, MAX_scalar)
+    # 下限
+    low = random.randrange(0, MAX_scalar - saturation)
+    # 上限
+    high = low + saturation
 
     print(f"""\
-{freedom_qty=}
-{half_freedom_qty=}
-{min_base_scalar=}
-{max_base_scalar=}
-{mid_scalar=}
 {saturation=}
 {low=}
 {high=}""")
