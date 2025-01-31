@@ -1,4 +1,6 @@
 import openpyxl as xl
+import math
+import random
 import traceback
 
 from openpyxl.styles import PatternFill
@@ -26,7 +28,10 @@ Input
     # ワークシート
     ws = wb['Sheet']
 
-    xl_color = create_first_color()
+    color_obj = create_first_color_obj()
+    print(f'{color_obj.to_web_safe_color()=}')
+
+    xl_color = color_obj.to_web_safe_color()[1:]
 
     pattern_fill = PatternFill(
             patternType='solid',
@@ -42,13 +47,21 @@ Input
     wb.save('./temp/hello.xlsx')
 
 
-def create_first_color():
-    """最初の１色を決めます。
+def create_first_color_obj():
+    """基準となる最初の１色を決めます。
     """
-    color = Color(0xFF, 0x66, 0x00)
-    web_safe_color = color.to_web_safe_color()[1:]
-    print(f'{web_safe_color=}')
-    return web_safe_color
+
+    # とりあえず、モノクロは避けるとします。
+
+    # RGB値の下限をとりあえず決めます
+    low = random.randrange(0, 240)
+    # RGB値の上限をとりあえず決めます
+    high = random.randrange(low, 255)
+    # low と high の中間
+    middle = math.floor((low + high) / 2)
+    
+    return Color(low, high, middle)
+    #color = Color(0xFF, 0x66, 0x00)
 
 
 ##########################
