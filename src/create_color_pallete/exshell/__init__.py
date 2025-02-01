@@ -64,3 +64,10 @@ class Exshell():
         # 外部プロセスを終了する（エクセルを閉じる）
         self.opened_excel_process.terminate()
         time.sleep(1)
+
+
+    def save_workbook(self, wb):
+        print(f"""\
+Save 📄［ {self.abs_path_to_workbook} ］ contents file...
+""")
+        wb.save(self.abs_path_to_workbook)

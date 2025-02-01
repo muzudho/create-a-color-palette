@@ -59,12 +59,10 @@ class PleaseInputHue():
             cell.value = hue
 
 
-        print(f"""\
-Save 📄［ {exshell.abs_path_to_workbook} ］ contents file...
-""")
-        wb.save(exshell.abs_path_to_workbook)
+        # ワークブック保存
+        exshell.save_workbook(wb=wb)
 
-
+        # エクセル開く
         exshell.open_virtual_display()
 
 
