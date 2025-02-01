@@ -12,6 +12,9 @@ from tomlkit import parse as toml_parse, dumps as toml_dumps
 
 from src.create_color_pallete import Color, ToneSystem
 
+
+PATH_TO_CONFIG = './config.toml'
+PATH_TO_CONTENTS = './temp/gradation.xlsx'
 MAX_SCALAR = 255
 
 
@@ -78,7 +81,7 @@ def main():
     context_rw = Context()
 
     # 設定ファイル読込
-    path_of_config = Path('./config.toml')
+    path_of_config = Path(PATH_TO_CONFIG)
     context_rw.abs_path_to_config = path_of_config.resolve()
     print(f'🔧　read 📄［ {context_rw.abs_path_to_config} ］config file...')
     with open(context_rw.abs_path_to_config, mode='r', encoding='utf-8') as f:
@@ -161,7 +164,7 @@ Input
             cell = ws[f'A3']
             cell.value = "引き続き、プログラムの指示に従ってください。よろしくお願いします。"
 
-            abs_file_path_to_write = Path('./temp/gradation.xlsx').resolve()
+            abs_file_path_to_write = Path(PATH_TO_CONTENTS).resolve()
             print(f"""\
 🔧　Save 📄［ {abs_file_path_to_write} ］file...
 """)
@@ -378,7 +381,7 @@ Input
             cur_hue -= 1
 
 
-    rel_file_path_to_write = './temp/gradation.xlsx'
+    rel_file_path_to_write = PATH_TO_CONTENTS
     path = Path(rel_file_path_to_write)
     abs_file_path_to_write = path.resolve()
     wb.save(abs_file_path_to_write)
