@@ -15,7 +15,7 @@ class PleaseInputExcelApplicationPath():
     """
 
     @staticmethod
-    def play(config_doc_rw, abs_path_to_exshell_config, abs_path_to_contents):
+    def play(exshell_builder):
 
         while True:
             message = f"""\
@@ -78,9 +78,9 @@ Input
 
             try:
                 print(f"""\
-🔧　Save 📄［ {abs_path_to_contents} ］contents file...
+🔧　Save 📄［ {exshell_builder.abs_path_to_workbook} ］workbook file...
 """)
-                wb.save(abs_path_to_contents)
+                wb.save(exshell_builder.abs_path_to_workbook)
             
             except Exception as ex:
                 print(f"""\
@@ -91,7 +91,7 @@ Input
                 message = f"""\
 🙋　Tutorial
 -------------
-何らかの理由で 📄［ {abs_path_to_contents} ］ファイルの上書きに失敗しました。
+何らかの理由で 📄［ {exshell_builder.abs_path_to_workbook} ］ファイルの上書きに失敗しました。
 
 問題をがんばって取り除いたあとで、
 もう一度、最初からやり直してください...
@@ -109,7 +109,7 @@ Input
             print(f"""\
 🔧　Open virtual display...
 """)
-            opened_excel_process = subprocess.Popen([temporary_excel_application_path, abs_path_to_contents])   # Excel が開くことを期待
+            opened_excel_process = subprocess.Popen([temporary_excel_application_path, exshell_builder.abs_path_to_workbook])   # Excel が開くことを期待
             time.sleep(1)
 
 
@@ -132,18 +132,18 @@ Input
 
             if line == 'y':
                 # 設定ファイルへ保存
-                config_doc_rw['excel']['path'] = temporary_excel_application_path
+                exshell_builder.config_doc_rw['excel']['path'] = temporary_excel_application_path
 
                 print(f"""\
-{config_doc_rw=}
-{config_doc_rw['excel']['path']=}
+{exshell_builder.config_doc_rw=}
+{exshell_builder.config_doc_rw['excel']['path']=}
 """)
 
                 print(f"""\
-🔧　Save 📄［ {abs_path_to_exshell_config} ］config file...
+🔧　Save 📄［ {exshell_builder.abs_path_to_config} ］config file...
 """)
-                with open(abs_path_to_exshell_config, mode='w', encoding='utf-8') as f:
-                    f.write(toml_dumps(config_doc_rw))
+                with open(exshell_builder.abs_path_to_config, mode='w', encoding='utf-8') as f:
+                    f.write(toml_dumps(exshell_builder.config_doc_rw))
 
                 # エクセルを閉じる
                 print(f"""\

@@ -8,11 +8,10 @@ import traceback
 
 from openpyxl.styles import PatternFill
 from pathlib import Path
-from tomlkit import parse as toml_parse
 
 from src.create_color_pallete import Color, ToneSystem
 from src.create_color_pallete.wizards import PleaseInputHue, PleaseInputNumberOfColorsYouWantToCreate
-from src.create_color_pallete.exshell import Exshell
+from src.create_color_pallete.exshell import Exshell, ExshellBuilder
 from src.create_color_pallete.exshell.wizards import PleaseInputExcelApplicationPath
 
 
@@ -27,34 +26,7 @@ class Context():
 
 
     def __init__(self):
-        self._abs_path_to_exshell_config = None
-        self._abs_path_to_contents = None
-
-        self._config_doc_rw = None
-
-        # ここでは、None は意志未決定、 '' は Excel アプリケーションを自動的に開かないという意志決定とします。
-        self._excel_application_path = None
-        self._opened_excel_process = None
-
-
-    @property
-    def abs_path_to_exshell_config(self):
-        return self._abs_path_to_exshell_config
-
-
-    @abs_path_to_exshell_config.setter
-    def abs_path_to_exshell_config(self, value):
-        self._abs_path_to_exshell_config = value
-
-
-    @property
-    def abs_path_to_contents(self):
-        return self._abs_path_to_contents
-
-
-    @abs_path_to_contents.setter
-    def abs_path_to_contents(self, value):
-        self._abs_path_to_contents = value
+        self._number_of_color_samples = None
 
 
     @property
@@ -67,63 +39,32 @@ class Context():
         self._number_of_color_samples = value
 
 
-    @property
-    def config_doc_rw(self):
-        return self._config_doc_rw
-
-
-    @config_doc_rw.setter
-    def config_doc_rw(self, value):
-        self._config_doc_rw = value
-
-
-    @property
-    def excel_application_path(self):
-        return self._excel_application_path
-
-
-    @excel_application_path.setter
-    def excel_application_path(self, value):
-        self._excel_application_path = value
-
-
 def main():
 
-    # 現在の状態を保持するオブジェクト
-    context_rw = Context()
-    context_rw.abs_path_to_exshell_config = Path(PATH_TO_EXSHELL_CONFIG).resolve()
-    context_rw.abs_path_to_contents = Path(PATH_TO_CONTENTS).resolve()
+    exshell_builder = ExshellBuilder(
+            abs_path_to_workbook=Path(PATH_TO_CONTENTS).resolve())
 
     # 設定ファイル読込
-    print(f'🔧　read 📄［ {context_rw.abs_path_to_exshell_config} ］config file...')
-    with open(context_rw.abs_path_to_exshell_config, mode='r', encoding='utf-8') as f:
-        config_text = f.read()
+    exshell_builder.load_config(abs_path=Path(PATH_TO_EXSHELL_CONFIG).resolve())
     
-    context_rw.config_doc_rw = toml_parse(config_text)
-
     print(f"""\
-{context_rw.config_doc_rw=}
-{context_rw.config_doc_rw['excel']['path']=}
+{exshell_builder.config_doc_rw=}
+{exshell_builder.config_doc_rw['excel']['path']=}
 """)
 
 
-
+    # 現在の状態を保持するオブジェクト
+    context_rw = Context()
 
     while True:
-        if not os.path.isfile(context_rw.config_doc_rw['excel']['path']):
+        if not os.path.isfile(exshell_builder.config_doc_rw['excel']['path']):
             PleaseInputExcelApplicationPath.play(
-                    config_doc_rw=context_rw.config_doc_rw,
-                    abs_path_to_exshell_config=context_rw.abs_path_to_exshell_config,
-                    abs_path_to_contents=context_rw.abs_path_to_contents)
-
-        #print() # 空行
+                    exshell_builder=exshell_builder)
 
         # 初期化
-        context_rw.excel_application_path = context_rw.config_doc_rw['excel']['path']
-
         exshell = Exshell(
-                excel_application_path=context_rw.excel_application_path,
-                abs_path_to_workbook=context_rw.abs_path_to_contents)
+                excel_application_path=exshell_builder.config_doc_rw['excel']['path'],
+                abs_path_to_workbook=exshell_builder.abs_path_to_workbook)
 
         # 基準となる色相
         PleaseInputHue.play(
