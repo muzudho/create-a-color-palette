@@ -3,7 +3,7 @@ import traceback
 from pathlib import Path
 
 from src.create_color_pallete.wizards import OutputGradation, PleaseInputBrightness, PleaseInputHue, PleaseInputNumberOfColorsYouWantToCreate, PleaseInputSaturation
-from src.create_color_pallete.exshell import ExshellBuilder
+from src.exshell import ExshellBuilder
 
 
 PATH_TO_EXSHELL_CONFIG = './exshell_config.toml'

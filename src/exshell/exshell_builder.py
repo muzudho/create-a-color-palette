@@ -2,8 +2,8 @@ import os
 
 from tomlkit import parse as toml_parse
 
-from src.create_color_pallete.exshell import Exshell
-from src.create_color_pallete.exshell.wizards import PleaseInputExcelApplicationPath
+from src.exshell import Exshell
+from src.exshell.wizards import PleaseInputExcelApplicationPath
 
 
 class ExshellBuilder():
