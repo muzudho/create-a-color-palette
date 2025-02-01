@@ -12,48 +12,79 @@ MAX_scalar = 255
 
 
 def main():
-    message = """\
-作りたい色の数を入力してください。
 
-Example
+    print() # 空行
+
+    message = """\
+Message
 -------
-3
+作りたい色の数を 1 以上、常識的な数以下の整数で入力してください。
+
+    Guide
+    -----
+    *   `3` - ３色
+    * `100` - １００色
+
+    Example of input
+    ----------------
+    7
 
 Input
 -----
 """
     line = input(message)
     number_of_color_samples = int(line)
+    print() # 空行
 
 
     message = f"""\
-彩度を 0 以上 {MAX_scalar} 以下の整数で入力してください。
-0 に近いほどグレー、{MAX_scalar} に近いほどビビッドに近づきます。
-
-Example
+Message
 -------
-180
+彩度を 0 以上 {MAX_scalar} 以下の整数で入力してください。
+
+    Guide
+    -----
+    *   `0` -   0 に近いほどグレー
+    * `{MAX_scalar:3}` - {MAX_scalar:3} に近いほどビビッド
+
+    Example of input
+    ----------------
+    {MAX_scalar*2//3:3}
 
 Input
 -----
 """
     line = input(message)
     saturation = int(line)
+    print() # 空行
 
+
+    high_brightness = MAX_scalar
+    low_brightness = saturation
+    mid_brightness = math.floor(high_brightness - low_brightness)
 
     message = f"""\
-明度を {saturation} 以上 {MAX_scalar - saturation} 以下の整数で入力してください。
-0 に近いほど黒、{MAX_scalar} に近いほど白に近づきます。
-
-Example
+Message
 -------
-{MAX_scalar - saturation}
+明度を {low_brightness} 以上 {high_brightness} 以下の整数で入力してください。
+
+    Guide
+    -----
+    *   `0` - Black
+    * `100` - Dark
+    * `220` - Bright
+    * `{MAX_scalar:3}` - White
+
+    Example of input
+    ----------------
+    {mid_brightness}
 
 Input
 -----
 """
     line = input(message)
     brightness = int(line)
+    print() # 空行
 
 
     # ワークブックを新規生成
@@ -158,7 +189,7 @@ def create_tone(saturation, brightness):
     # 上限
     high = brightness
     # 下限
-    low = brightness - saturation
+    low = saturation
 
     if 255 < high:
         raise ValueError(f'{high=} Others: {brightness=} {saturation=}')
