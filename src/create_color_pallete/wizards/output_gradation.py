@@ -1,5 +1,5 @@
 import openpyxl as xl
-import random
+#import random
 
 from openpyxl.styles import PatternFill
 
@@ -54,14 +54,8 @@ class OutputGradation():
                     low=low,
                     high=high,
                     hue=cur_hue)
-#         print(f"""\
-# {low=}
-# {high=}
-# {cur_hue=}""")
 
             color_obj = Color(tone_system.get_red(), tone_system.get_green(), tone_system.get_blue())
-#         print(f"""\
-# {color_obj.to_web_safe_color()=}""")
     
             web_safe_color = color_obj.to_web_safe_color()
             xl_color = web_safe_color[1:]
@@ -111,10 +105,12 @@ class OutputGradation():
 
 
         message = f"""\
-Message
--------
-自動的に開いた Excel アプリケーションを閉じたい場合は y を、
-そうでない場合は　それ以外を入力してください。
+🙋　Please input
+-----------------
+グラデーションを作成しました。
+
+アプリケーションを終了するなら y を、
+やり直す場合は　それ以外を入力してください。
 
     Example of input
     ----------------
@@ -126,9 +122,12 @@ Input
         line = input(message)
         print() # 空行
 
-        if line == 'y':
-            # エクセル閉じる
-            exshell.close_virtual_display()
+
+        # エクセル閉じる
+        exshell.close_virtual_display()
+
+
+        return line == 'y'
 
 
     @staticmethod

@@ -46,12 +46,15 @@ def main():
         brightness = PleaseInputBrightness.play(saturation=saturation)
         
         # グラデーションを出力する
-        OutputGradation.play(
+        is_exit = OutputGradation.play(
                 number_of_color_samples=number_of_color_samples,
                 start_hue=start_hue,
                 saturation=saturation,
                 brightness=brightness,
                 exshell=exshell)
+
+        if is_exit:
+            break
 
 
 ##########################
