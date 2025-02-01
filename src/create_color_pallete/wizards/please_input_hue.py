@@ -4,31 +4,13 @@ import time
 
 from openpyxl.styles import PatternFill
 
+from src.create_color_pallete import Color, ToneSystem
 
-class PleaseInputNumberOfColorsYouWantToCreate():
+
+class PleaseInputHue():
 
 
     def play(abs_path_to_contents, excel_application_path):
-        message = """\
-🙋　Please input
------------------
-作りたい色の数を 1 以上、常識的な数以下の整数で入力してください。
-
-    Guide
-    -----
-    *   `3` - ３色
-    * `100` - １００色
-
-    Example of input
-    ----------------
-    7
-
-Input
------
-"""
-        line = input(message)
-        number_of_color_samples = int(line)
-        print() # 空行
 
 
         # ワークブックを新規生成
@@ -37,16 +19,26 @@ Input
         # ワークシート
         ws = wb['Sheet']
 
-        cell = ws[f'A1']
-        cell.value = "No"
-
         cell = ws[f'B1']
         cell.value = "色"
 
+        cell = ws[f'C1']
+        cell.value = "この番号を入力してください"
 
-        for index, row_th in enumerate(range(2, 2 + number_of_color_samples)):
 
-            web_safe_color = '#FFFFFF'
+        number_of_colors = 12
+
+        for index in range(0, number_of_colors):
+            # 小数点以下第２位で丸め
+            hue = round(index / number_of_colors, 2)
+
+            tone_system = ToneSystem(
+                    low=0,
+                    high=255,
+                    hue=hue)
+            color_obj = Color(tone_system.get_red(), tone_system.get_green(), tone_system.get_blue())
+
+            web_safe_color = color_obj.to_web_safe_color()
             xl_color = web_safe_color[1:]
             try:
                 pattern_fill = PatternFill(
@@ -56,9 +48,8 @@ Input
                 print(f'{xl_color=}')
                 raise
 
-            # 連番
-            cell = ws[f'A{row_th}']
-            cell.value = index
+
+            row_th = index + 2
 
             # 色
             cell = ws[f'B{row_th}']
@@ -66,7 +57,7 @@ Input
 
             # コメント
             cell = ws[f'C{row_th}']
-            cell.value = '未定'
+            cell.value = hue
 
 
         print(f"""\
@@ -83,20 +74,22 @@ Save 📄［ {abs_path_to_contents} ］ contents file...
         time.sleep(1)
 
 
-        message = f"""\
+        message = """\
 🙋　Please input
 -----------------
-開いたワークシートは、サンプルです。
-次に進むために、こちらに何も文字を入力せずエンターキーを入力してください。
+開かれたワークシートから、好きな色を１つ選んで番号を入力してください。
+番号はワークシートに書いていない番号でも、 0 以上 1 以下の実数で入力できます。
+分からなかったら 0 を入力してください。
 
     Example of input
     ----------------
-    
+    0.8123
 
 Input
 -----
 """
         line = input(message)
+        number_of_hue = float(line)
         print() # 空行
 
 
@@ -108,4 +101,4 @@ Input
         time.sleep(1)
 
 
-        return number_of_color_samples
+        return number_of_hue

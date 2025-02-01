@@ -1,1 +1,2 @@
-from .please_input_number_of_colors_you_want_to_create import InputNumberOfColorsYouWantToCreate
+from .please_input_hue import PleaseInputHue
+from .please_input_number_of_colors_you_want_to_create import PleaseInputNumberOfColorsYouWantToCreate

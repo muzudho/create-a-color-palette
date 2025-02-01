@@ -11,7 +11,7 @@ from pathlib import Path
 from tomlkit import parse as toml_parse
 
 from src.create_color_pallete import Color, ToneSystem
-from src.create_color_pallete.wizards import InputNumberOfColorsYouWantToCreate
+from src.create_color_pallete.wizards import PleaseInputHue, PleaseInputNumberOfColorsYouWantToCreate
 from src.create_color_pallete.wizards.basic_settings import PleaseInputExcelApplicationPath
 
 
@@ -135,8 +135,13 @@ def main():
         # 初期化
         context_rw.excel_application_path = context_rw.config_doc_rw['excel']['path']
 
+        # 基準となる色相
+        PleaseInputHue.play(
+                abs_path_to_contents=context_rw.abs_path_to_contents,
+                excel_application_path=context_rw.excel_application_path)
+
         # 色の数
-        context_rw.number_of_color_samples = InputNumberOfColorsYouWantToCreate.play(
+        context_rw.number_of_color_samples = PleaseInputNumberOfColorsYouWantToCreate.play(
                 abs_path_to_contents=context_rw.abs_path_to_contents,
                 excel_application_path=context_rw.excel_application_path)
 
