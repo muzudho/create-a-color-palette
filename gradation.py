@@ -32,8 +32,11 @@ def main():
     while True:
 
         # 基準となる色相
-        start_hue = PleaseInputHue.play(
+        is_error, start_hue = PleaseInputHue.play(
                 exshell=exshell)
+        
+        if is_error:
+            continue
 
         # 色の数
         number_of_color_samples = PleaseInputNumberOfColorsYouWantToCreate.play(

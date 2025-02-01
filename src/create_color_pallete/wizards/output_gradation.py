@@ -95,7 +95,7 @@ class OutputGradation():
 
             # ウェブ・セーフ・カラー
             cell = ws[f'C{row_th}']
-            cell.value = web_safe_color
+            cell.value = web_safe_color.upper()
 
             # デバッグ情報
             # cell = ws[f'A{row_th}']

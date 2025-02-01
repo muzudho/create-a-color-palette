@@ -58,9 +58,29 @@ class PleaseInputHue():
             cell = ws[f'C{row_th}']
             cell.value = hue
 
+        try:
+            # ワークブック保存
+            exshell.save_workbook(wb=wb)
 
-        # ワークブック保存
-        exshell.save_workbook(wb=wb)
+        except PermissionError:
+            # TODO ファイルが既に開かれているかも
+            message = f"""\
+🙋　Error
+----------
+📄［ {exshell.abs_path_to_workbook} ］ファイルが既に開かれているかもしれません？
+
+問題を解決したあと、Enter キーを空打ちしてください。
+
+    Example of input
+    ----------------
+    
+
+Input
+-----
+"""
+            input(message)
+            return True, None
+
 
         # エクセル開く
         exshell.open_virtual_display()
@@ -89,4 +109,4 @@ Input
         exshell.close_virtual_display()
 
 
-        return number_of_hue
+        return False, number_of_hue
