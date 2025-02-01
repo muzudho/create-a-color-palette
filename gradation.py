@@ -162,6 +162,10 @@ Input
                 time.sleep(1)
 
 
+    # 初期化
+    context_rw.excel_application_path = context_rw.config_doc_rw['excel']['path']
+
+
     message = """\
 Message
 -------
@@ -328,34 +332,12 @@ Input
 Save 📄［ {abs_path_to_contents} ］ file.
 """)
 
-    if context_rw.excel_application_path is None:
-        message = f"""\
-Message
--------
-作成した結果を Excel アプリケーションで開きたいです。
-できれば Excel アプリケーションのファイルパスを入力してください。
-そうでなければ、そのまま Enter キーを押下してください。
-
-    Example of input
-    ----------------
-    C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE
-
-Input
------
-"""
-        excel_path = input(message)
-        print() # 空行
-    
-    else:
-        excel_path = context_rw.excel_application_path
-
 
     is_successful = False
-    if excel_path != '':
-        print(f"""\
+    print(f"""\
 Attempt to start Excel.""")
-        context_rw.set_opened_excel_process(
-            subprocess.Popen([excel_path, abs_path_to_contents]))    # Excel が開くことを期待
+    context_rw.set_opened_excel_process(
+        subprocess.Popen([context_rw.excel_application_path, abs_path_to_contents]))    # Excel が開くことを期待
 
 
     if context_rw.is_excel_process_opened():
