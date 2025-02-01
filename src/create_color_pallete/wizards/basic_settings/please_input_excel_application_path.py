@@ -15,7 +15,7 @@ class PleaseInputExcelApplicationPath():
     """
 
     @staticmethod
-    def play(config_doc_rw, abs_path_to_config, abs_path_to_contents):
+    def play(config_doc_rw, abs_path_to_exshell_config, abs_path_to_contents):
 
         while True:
             message = f"""\
@@ -140,9 +140,9 @@ Input
 """)
 
                 print(f"""\
-🔧　Save 📄［ {abs_path_to_config} ］config file...
+🔧　Save 📄［ {abs_path_to_exshell_config} ］config file...
 """)
-                with open(abs_path_to_config, mode='w', encoding='utf-8') as f:
+                with open(abs_path_to_exshell_config, mode='w', encoding='utf-8') as f:
                     f.write(toml_dumps(config_doc_rw))
 
                 # エクセルを閉じる

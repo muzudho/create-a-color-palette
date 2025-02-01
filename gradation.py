@@ -15,7 +15,7 @@ from src.create_color_pallete.wizards import PleaseInputHue, PleaseInputNumberOf
 from src.create_color_pallete.wizards.basic_settings import PleaseInputExcelApplicationPath
 
 
-PATH_TO_CONFIG = './config.toml'
+PATH_TO_EXSHELL_CONFIG = './exshell_config.toml'
 PATH_TO_CONTENTS = './temp/gradation.xlsx'
 MAX_SCALAR = 255
 
@@ -26,7 +26,7 @@ class Context():
 
 
     def __init__(self):
-        self._abs_path_to_config = None
+        self._abs_path_to_exshell_config = None
         self._abs_path_to_contents = None
 
         self._config_doc_rw = None
@@ -37,13 +37,13 @@ class Context():
 
 
     @property
-    def abs_path_to_config(self):
-        return self._abs_path_to_config
+    def abs_path_to_exshell_config(self):
+        return self._abs_path_to_exshell_config
 
 
-    @abs_path_to_config.setter
-    def abs_path_to_config(self, value):
-        self._abs_path_to_config = value
+    @abs_path_to_exshell_config.setter
+    def abs_path_to_exshell_config(self, value):
+        self._abs_path_to_exshell_config = value
 
 
     @property
@@ -103,12 +103,12 @@ def main():
 
     # 現在の状態を保持するオブジェクト
     context_rw = Context()
-    context_rw.abs_path_to_config = Path(PATH_TO_CONFIG).resolve()
+    context_rw.abs_path_to_exshell_config = Path(PATH_TO_EXSHELL_CONFIG).resolve()
     context_rw.abs_path_to_contents = Path(PATH_TO_CONTENTS).resolve()
 
     # 設定ファイル読込
-    print(f'🔧　read 📄［ {context_rw.abs_path_to_config} ］config file...')
-    with open(context_rw.abs_path_to_config, mode='r', encoding='utf-8') as f:
+    print(f'🔧　read 📄［ {context_rw.abs_path_to_exshell_config} ］config file...')
+    with open(context_rw.abs_path_to_exshell_config, mode='r', encoding='utf-8') as f:
         config_text = f.read()
     
     context_rw.config_doc_rw = toml_parse(config_text)
@@ -125,7 +125,7 @@ def main():
         if not os.path.isfile(context_rw.config_doc_rw['excel']['path']):
             PleaseInputExcelApplicationPath.play(
                     config_doc_rw=context_rw.config_doc_rw,
-                    abs_path_to_config=context_rw.abs_path_to_config,
+                    abs_path_to_exshell_config=context_rw.abs_path_to_exshell_config,
                     abs_path_to_contents=context_rw.abs_path_to_contents)
 
             #context_rw.set_opened_excel_process(opened_excel_process)
