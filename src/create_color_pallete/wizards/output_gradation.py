@@ -1,7 +1,8 @@
 import openpyxl as xl
 #import random
 
-from openpyxl.styles import PatternFill
+from openpyxl.styles import Font, PatternFill
+from openpyxl.styles.alignment import Alignment
 
 from src.create_color_pallete import Color, ToneSystem
 
@@ -27,15 +28,32 @@ class OutputGradation():
 #     print(f"""\
 # {step_hue=}""")
 
+        ws.column_dimensions['A'].width = 2.7 * 2    # 2.7 characters = about 30 pixels
+        ws.column_dimensions['B'].width = 2.7 * 5    # 2.7 characters = about 30 pixels
+        ws.column_dimensions['C'].width = 2.7 * 7    # 2.7 characters = about 30 pixels
+
+        title_font = Font(color='F8F8F8')
+        title_pattern_fill = PatternFill(
+                patternType='solid',
+                fgColor='333333')
 
         cell = ws[f'A1']
         cell.value = "No"
+        cell.font = title_font
+        cell.fill = title_pattern_fill
+        cell.alignment = Alignment(horizontal='right', vertical='center')
 
         cell = ws[f'B1']
         cell.value = "色"
+        cell.font = title_font
+        cell.fill = title_pattern_fill
+        cell.alignment = Alignment(horizontal='center', vertical='center')
 
         cell = ws[f'C1']
         cell.value = "ウェブ・セーフ・カラー"
+        cell.font = title_font
+        cell.fill = title_pattern_fill
+        cell.alignment = Alignment(horizontal='left', vertical='center')
 
         # デバッグ用情報
         # cell = ws[f'A1']
