@@ -7,8 +7,30 @@ class Exshell():
     """
 
 
-    def __init__(self):
+    def __init__(self, excel_application_path, abs_path_to_workbook):
+        self._excel_application_path = excel_application_path
+        self._abs_path_to_workbook = abs_path_to_workbook
         self._opened_excel_process = None
+
+
+    @property
+    def excel_application_path(self):
+        return self._excel_application_path
+
+
+    @excel_application_path.setter
+    def excel_application_path(self, value):
+        self._excel_application_path = value
+
+
+    @property
+    def abs_path_to_workbook(self):
+        return self._abs_path_to_workbook
+
+
+    @abs_path_to_workbook.setter
+    def abs_path_to_workbook(self, value):
+        self._abs_path_to_workbook = value
 
 
     @property
@@ -21,14 +43,14 @@ class Exshell():
         self._opened_excel_process = value
 
 
-    def open_virtual_display(self, excel_application_path, abs_path_to_workbook):
+    def open_virtual_display(self):
         """仮想ディスプレイを開く
         """
         print(f"""\
 🔧　Open virtual display...
 """)
         # 外部プロセスを開始する（エクセルを開く）
-        self.opened_excel_process = subprocess.Popen([excel_application_path, abs_path_to_workbook])   # Excel が開くことを期待
+        self.opened_excel_process = subprocess.Popen([self.excel_application_path, self.abs_path_to_workbook])   # Excel が開くことを期待
         time.sleep(1)
 
 

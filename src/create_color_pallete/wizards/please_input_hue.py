@@ -5,14 +5,12 @@ import time
 from openpyxl.styles import PatternFill
 
 from src.create_color_pallete import Color, ToneSystem
-from src.create_color_pallete.exshell import Exshell
 
 
 class PleaseInputHue():
 
 
-    def play(abs_path_to_contents, excel_application_path):
-
+    def play(exshell):
 
         # ワークブックを新規生成
         wb = xl.Workbook()
@@ -62,15 +60,12 @@ class PleaseInputHue():
 
 
         print(f"""\
-Save 📄［ {abs_path_to_contents} ］ contents file...
+Save 📄［ {exshell.abs_path_to_workbook} ］ contents file...
 """)
-        wb.save(abs_path_to_contents)
+        wb.save(exshell.abs_path_to_workbook)
 
 
-        exshell = Exshell()
-        exshell.open_virtual_display(
-                excel_application_path=excel_application_path,
-                abs_path_to_workbook=abs_path_to_contents)
+        exshell.open_virtual_display()
 
 
         message = """\

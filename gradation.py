@@ -12,7 +12,8 @@ from tomlkit import parse as toml_parse
 
 from src.create_color_pallete import Color, ToneSystem
 from src.create_color_pallete.wizards import PleaseInputHue, PleaseInputNumberOfColorsYouWantToCreate
-from src.create_color_pallete.wizards.basic_settings import PleaseInputExcelApplicationPath
+from src.create_color_pallete.exshell import Exshell
+from src.create_color_pallete.exshell.wizards import PleaseInputExcelApplicationPath
 
 
 PATH_TO_EXSHELL_CONFIG = './exshell_config.toml'
@@ -135,10 +136,13 @@ def main():
         # 初期化
         context_rw.excel_application_path = context_rw.config_doc_rw['excel']['path']
 
+        exshell = Exshell(
+                excel_application_path=context_rw.excel_application_path,
+                abs_path_to_workbook=context_rw.abs_path_to_contents)
+
         # 基準となる色相
         PleaseInputHue.play(
-                abs_path_to_contents=context_rw.abs_path_to_contents,
-                excel_application_path=context_rw.excel_application_path)
+                exshell=exshell)
 
         # 色の数
         context_rw.number_of_color_samples = PleaseInputNumberOfColorsYouWantToCreate.play(
