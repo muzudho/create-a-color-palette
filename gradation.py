@@ -11,7 +11,8 @@ from pathlib import Path
 from tomlkit import parse as toml_parse
 
 from src.create_color_pallete import Color, ToneSystem
-from src.create_color_pallete.wizards import PleaseInputExcelApplicationPath
+from src.create_color_pallete.wizards import InputNumberOfColorsYouWantToCreate
+from src.create_color_pallete.wizards.basic_settings import PleaseInputExcelApplicationPath
 
 
 PATH_TO_CONFIG = './config.toml'
@@ -53,6 +54,16 @@ class Context():
     @abs_path_to_contents.setter
     def abs_path_to_contents(self, value):
         self._abs_path_to_contents = value
+
+
+    @property
+    def number_of_color_samples(self):
+        return self._number_of_color_samples
+
+
+    @number_of_color_samples.setter
+    def number_of_color_samples(self, value):
+        self._number_of_color_samples = value
 
 
     @property
@@ -119,39 +130,21 @@ def main():
 
             #context_rw.set_opened_excel_process(opened_excel_process)
 
+        #print() # 空行
+
+        # 初期化
+        context_rw.excel_application_path = context_rw.config_doc_rw['excel']['path']
+
+        # 色の数
+        context_rw.number_of_color_samples = InputNumberOfColorsYouWantToCreate.play(
+                abs_path_to_contents=context_rw.abs_path_to_contents,
+                excel_application_path=context_rw.excel_application_path)
+
         subroutine(
                 context_rw=context_rw)
 
 
 def subroutine(context_rw):
-
-    print() # 空行
-
-    # 初期化
-    context_rw.excel_application_path = context_rw.config_doc_rw['excel']['path']
-
-
-    message = """\
-Message
--------
-作りたい色の数を 1 以上、常識的な数以下の整数で入力してください。
-
-    Guide
-    -----
-    *   `3` - ３色
-    * `100` - １００色
-
-    Example of input
-    ----------------
-    7
-
-Input
------
-"""
-    line = input(message)
-    number_of_color_samples = int(line)
-    print() # 空行
-
 
     message = f"""\
 Message

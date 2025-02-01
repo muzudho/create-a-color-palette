@@ -1,1 +1,1 @@
-from .please_input_excel_application_path import PleaseInputExcelApplicationPath
+from .please_input_number_of_colors_you_want_to_create import InputNumberOfColorsYouWantToCreate

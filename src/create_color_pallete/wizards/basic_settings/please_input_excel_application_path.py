@@ -8,7 +8,11 @@ from pathlib import Path
 
 
 class PleaseInputExcelApplicationPath():
+    """TOML形式の設定ファイルに、以下の行（例）を追加させるためのウィザード。
 
+    [excel]
+    path = "C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE"
+    """
 
     @staticmethod
     def play(config_doc_rw, abs_path_to_config, abs_path_to_contents):
@@ -37,7 +41,6 @@ Excel アプリケーションへのファイルパスの調べ方を説明し�
     これでクリップボードにファイルパスがコピーされました。
     これをターミナルに貼り付けてください。
     両端にダブルクォーテーションが付いているので、ダブルクォーテーションは削除してください...
-
 """
             print(message)
             time.sleep(1)
@@ -159,3 +162,14 @@ Input
 """
                 print(message)
                 time.sleep(1)
+
+        message = f"""\
+🙋　Tutorial
+-------------
+このアプリケーションと、 Excel アプリケーションの紐付けが完了しました。
+
+引き続き、よろしくお願いします...
+
+"""
+        print(message)
+        time.sleep(1)
