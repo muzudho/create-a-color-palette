@@ -4,6 +4,7 @@ import random
 import traceback
 
 from openpyxl.styles import PatternFill
+from pathlib import Path
 from src.create_color_pallete import Color, ToneSystem
 
 
@@ -41,12 +42,12 @@ Input
 
 
     message = f"""\
-明度を {saturation} 以上 {MAX_scalar} 以下の整数で入力してください。
+明度を {saturation} 以上 {MAX_scalar - saturation} 以下の整数で入力してください。
 0 に近いほど黒、{MAX_scalar} に近いほど白に近づきます。
 
 Example
 -------
-{saturation}
+{MAX_scalar - saturation}
 
 Input
 -----
@@ -133,9 +134,10 @@ Input
             cur_hue -= 1
 
 
-    file_path_to_write = './temp/gradation.xlsx'
-    wb.save(file_path_to_write)
-    print(f"Please look 📄［{file_path_to_write}］ file.")
+    rel_file_path_to_write = './temp/gradation.xlsx'
+    path = Path(rel_file_path_to_write)
+    wb.save(rel_file_path_to_write)
+    print(f"Please look 📄［ {path.resolve()} ］ file.")
 
 
 def create_tone(saturation, brightness):
