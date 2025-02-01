@@ -6,8 +6,9 @@ import traceback
 
 from openpyxl.styles import PatternFill
 from pathlib import Path
-from src.create_color_pallete import Color, ToneSystem
+from tomlkit import parse as toml_parse
 
+from src.create_color_pallete import Color, ToneSystem
 
 MAX_scalar = 255
 
@@ -18,9 +19,21 @@ class Context():
 
 
     def __init__(self):
+        self._config_doc_rw = None
+
         # ここでは、None は意志未決定、 '' は Excel アプリケーションを自動的に開かないという意志決定とします。
         self._excel_application_path = None
         self._opened_excel_process = None
+
+
+    @property
+    def config_doc_rw(self):
+        return self._config_doc_rw
+
+
+    @config_doc_rw.setter
+    def config_doc_rw(self, value):
+        self._config_doc_rw = value
 
 
     @property
@@ -47,7 +60,25 @@ class Context():
 
 
 def main():
+
+    # 現在の状態を保持するオブジェクト
     context_rw = Context()
+
+    # 設定ファイル読込
+    path_of_config = Path('./config.toml')
+    abs_path_of_config = path_of_config.resolve()
+    print(f'🔧　read 📄［ {abs_path_of_config} ］config file...')
+    with open(abs_path_of_config, mode='r+', encoding='utf-8') as f:
+        config_text = f.read()
+    
+    context_rw.config_doc_rw = toml_parse(config_text)
+
+    print(f"""\
+{context_rw.config_doc_rw=}
+{context_rw.config_doc_rw['excel']['path']=}
+""")
+
+
     while True:
         subroutine(
                 context_rw=context_rw)
@@ -56,6 +87,87 @@ def main():
 def subroutine(context_rw):
 
     print() # 空行
+
+    if context_rw.config_doc_rw['excel']['path'] == '':
+        message = f"""\
+🙋　Tutorial
+-------------
+このアプリケーションでは、 Excel アプリケーションを自動的に開いたり閉じたりしたいです。
+
+これに同意できる方は、後述の説明を参考に Excel アプリケーションへのファイルパスを入力してください。
+そうでない方は、[Ctrl] + [C] キーなどで強制終了していただくことができます。
+
+Excel アプリケーションへのファイルパスの調べ方を説明します。
+
+◆ Windows 11 を使っていて、Excel をすでにインストールしている方：
+    タスクバーの検索ボックスに `Excel` と入力し、
+    出てきた Excel のアイコンを右クリックして［ファイルの場所を開く］をクリックしてください。
+    ショートカット・アイコンが出てくるのでさらに右クリックして［ファイルの場所を開く］をクリックしてください。
+    📄［EXCEL.EXE］ファイルが出てくるので右クリックして［パスのコピー］をクリックしてください。
+    これでクリップボードにファイルパスがコピーされました。
+    これをターミナルに貼り付けてください。
+    両端にダブルクォーテーションが付いているので、ダブルクォーテーションは削除してください。
+
+◆ それ以外の方
+    がんばってください。
+
+
+    Example of input
+    ----------------
+    C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE
+
+Input
+-----
+"""
+        temporary_excel_application_path = input(message)
+        print() # 空行
+
+        # ワークブックを新規生成
+        wb = xl.Workbook()
+
+        # ワークシート
+        ws = wb['Sheet']
+
+        cell = ws[f'A1']
+        cell.value = "ありがとうございます。 Excel ファイルを開けました。"
+
+        cell = ws[f'A2']
+        cell.value = "この画面は、プログラムの方から閉じますので、このままにしておいてください。"
+
+        cell = ws[f'A3']
+        cell.value = "引き続き、プログラムの指示に従ってください。よろしくお願いします。"
+
+        abs_file_path_to_write = Path('./temp/gradation.xlsx').resolve()
+        print(f"""\
+🔧　Save 📄［ {abs_file_path_to_write} ］file...
+""")
+        wb.save(abs_file_path_to_write)
+
+        print(f"""\
+🔧　Attempt to open Excel...
+""")
+        context_rw.set_opened_excel_process(
+            subprocess.Popen([temporary_excel_application_path, abs_file_path_to_write]))    # Excel が開くことを期待
+
+        message = f"""\
+🙋　Tutorial
+-------------
+Excel アプリケーションが自動的に開かれた方は `y` を、
+そうでない場合は　それ以外を入力してください。
+
+    Example of input
+    ----------------
+    y
+
+Input
+-----
+"""
+        line = input(message)
+        print() # 空行
+
+        if line == 'y':
+            context_rw.terminate_opened_excel_process()
+
 
     message = """\
 Message

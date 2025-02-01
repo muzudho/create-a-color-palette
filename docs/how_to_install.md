@@ -5,4 +5,5 @@
 
 ```shell
 pip install openpyxl
+pip install tomlkit
 ```
