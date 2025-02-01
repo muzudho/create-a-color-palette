@@ -1,5 +1,8 @@
 import openpyxl as xl
+import subprocess
 import time
+
+from tomlkit import dumps as toml_dumps
 
 from pathlib import Path
 
@@ -8,7 +11,8 @@ class PleaseInputExcelApplicationPath():
 
 
     @staticmethod
-    def play(abs_path_to_contents):
+    def play(config_doc_rw, abs_path_to_config, abs_path_to_contents):
+
         while True:
             message = f"""\
 🙋　Tutorial
@@ -68,11 +72,11 @@ Input
             cell = ws[f'A3']
             cell.value = "引き続き、プログラムの指示に従ってください。よろしくお願いします。"
 
-            print(f"""\
-🔧　Save 📄［ {abs_path_to_contents} ］file...
-""")
 
             try:
+                print(f"""\
+🔧　Save 📄［ {abs_path_to_contents} ］contents file...
+""")
                 wb.save(abs_path_to_contents)
             
             except Exception as ex:
@@ -94,5 +98,64 @@ Input
                 time.sleep(1)
                 continue
 
-            # 正常終了
-            return temporary_excel_application_path
+
+            # Excel のファイルパス入力完了
+
+
+            # エクセルを開く
+            print(f"""\
+🔧　Open Excel...
+""")
+            opened_excel_process = subprocess.Popen([temporary_excel_application_path, abs_path_to_contents])   # Excel が開くことを期待
+            time.sleep(1)
+
+
+            message = f"""\
+🙋　Tutorial
+-------------
+Excel アプリケーションが自動的に開かれた方は `y` を、
+そうでない場合は　それ以外を入力してください。
+
+    Example of input
+    ----------------
+    y
+
+Input
+-----
+"""
+            line = input(message)
+            print() # 空行
+
+
+            if line == 'y':
+                # 設定ファイルへ保存
+                config_doc_rw['excel']['path'] = temporary_excel_application_path
+
+                print(f"""\
+{config_doc_rw=}
+{config_doc_rw['excel']['path']=}
+""")
+
+                print(f"""\
+🔧　Save 📄［ {abs_path_to_config} ］config file...
+""")
+                with open(abs_path_to_config, mode='w', encoding='utf-8') as f:
+                    f.write(toml_dumps(config_doc_rw))
+
+                # エクセルを閉じる
+                print(f"""\
+🔧　Close Excel...
+""")
+                opened_excel_process.terminate()
+                time.sleep(1)
+                break
+                
+            else:
+                message = f"""\
+🙋　Tutorial
+-------------
+もう一度、最初からやり直してください...
+
+"""
+                print(message)
+                time.sleep(1)

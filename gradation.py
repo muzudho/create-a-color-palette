@@ -8,7 +8,7 @@ import traceback
 
 from openpyxl.styles import PatternFill
 from pathlib import Path
-from tomlkit import parse as toml_parse, dumps as toml_dumps
+from tomlkit import parse as toml_parse
 
 from src.create_color_pallete import Color, ToneSystem
 from src.create_color_pallete.wizards import PleaseInputExcelApplicationPath
@@ -26,6 +26,8 @@ class Context():
 
     def __init__(self):
         self._abs_path_to_config = None
+        self._abs_path_to_contents = None
+
         self._config_doc_rw = None
 
         # ここでは、None は意志未決定、 '' は Excel アプリケーションを自動的に開かないという意志決定とします。
@@ -41,6 +43,16 @@ class Context():
     @abs_path_to_config.setter
     def abs_path_to_config(self, value):
         self._abs_path_to_config = value
+
+
+    @property
+    def abs_path_to_contents(self):
+        return self._abs_path_to_contents
+
+
+    @abs_path_to_contents.setter
+    def abs_path_to_contents(self, value):
+        self._abs_path_to_contents = value
 
 
     @property
@@ -80,10 +92,10 @@ def main():
 
     # 現在の状態を保持するオブジェクト
     context_rw = Context()
+    context_rw.abs_path_to_config = Path(PATH_TO_CONFIG).resolve()
+    context_rw.abs_path_to_contents = Path(PATH_TO_CONTENTS).resolve()
 
     # 設定ファイル読込
-    path_of_config = Path(PATH_TO_CONFIG)
-    context_rw.abs_path_to_config = path_of_config.resolve()
     print(f'🔧　read 📄［ {context_rw.abs_path_to_config} ］config file...')
     with open(context_rw.abs_path_to_config, mode='r', encoding='utf-8') as f:
         config_text = f.read()
@@ -96,7 +108,17 @@ def main():
 """)
 
 
+
+
     while True:
+        if not os.path.isfile(context_rw.config_doc_rw['excel']['path']):
+            PleaseInputExcelApplicationPath.play(
+                    config_doc_rw=context_rw.config_doc_rw,
+                    abs_path_to_config=context_rw.abs_path_to_config,
+                    abs_path_to_contents=context_rw.abs_path_to_contents)
+
+            #context_rw.set_opened_excel_process(opened_excel_process)
+
         subroutine(
                 context_rw=context_rw)
 
@@ -104,63 +126,6 @@ def main():
 def subroutine(context_rw):
 
     print() # 空行
-
-    abs_path_to_contents = Path(PATH_TO_CONTENTS).resolve()
-
-    if not os.path.isfile(context_rw.config_doc_rw['excel']['path']):
-        while True:
-            temporary_excel_application_path = PleaseInputExcelApplicationPath.play(
-                    abs_path_to_contents=abs_path_to_contents)
-
-            print(f"""\
-🔧　Open Excel...
-""")
-            context_rw.set_opened_excel_process(
-                subprocess.Popen([temporary_excel_application_path, abs_path_to_contents]))    # Excel が開くことを期待
-            time.sleep(1)
-
-            message = f"""\
-🙋　Tutorial
--------------
-Excel アプリケーションが自動的に開かれた方は `y` を、
-そうでない場合は　それ以外を入力してください。
-
-    Example of input
-    ----------------
-    y
-
-Input
------
-"""
-            line = input(message)
-            print() # 空行
-
-            if line == 'y':
-                context_rw.config_doc_rw['excel']['path'] = temporary_excel_application_path
-
-                print(f"""\
-🔧　Save 📄［ {context_rw.abs_path_to_config} ］config file...
-""")
-                with open(context_rw.abs_path_to_config, mode='w', encoding='utf-8') as f:
-                    f.write(toml_dumps(context_rw.config_doc_rw))
-
-                print(f"""\
-🔧　Close Excel...
-""")
-                context_rw.terminate_opened_excel_process()
-                time.sleep(1)
-                break
-                
-            else:
-                message = f"""\
-🙋　Tutorial
--------------
-もう一度、最初からやり直してください...
-
-"""
-                print(message)
-                time.sleep(1)
-
 
     # 初期化
     context_rw.excel_application_path = context_rw.config_doc_rw['excel']['path']
@@ -327,9 +292,9 @@ Input
             cur_hue -= 1
 
 
-    wb.save(abs_path_to_contents)
+    wb.save(context_rw.abs_path_to_contents)
     print(f"""\
-Save 📄［ {abs_path_to_contents} ］ file.
+Save 📄［ {context_rw.abs_path_to_contents} ］ file.
 """)
 
 
@@ -337,12 +302,12 @@ Save 📄［ {abs_path_to_contents} ］ file.
     print(f"""\
 Attempt to start Excel.""")
     context_rw.set_opened_excel_process(
-        subprocess.Popen([context_rw.excel_application_path, abs_path_to_contents]))    # Excel が開くことを期待
+        subprocess.Popen([context_rw.excel_application_path, context_rw.abs_path_to_contents]))    # Excel が開くことを期待
 
 
     if context_rw.is_excel_process_opened():
         print(f"""\
-Please open 📄［ {abs_path_to_contents} ］ file.
+Please open 📄［ {context_rw.abs_path_to_contents} ］ file.
 """)
 
 
