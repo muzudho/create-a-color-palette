@@ -28,13 +28,29 @@ class ExshellBuilder():
         return os.path.isfile(self.config_doc_rw['excel']['path'])
 
 
-    def load_config(self, abs_path):
+    def load_config(self, abs_path, create_if_not_exists=False):
         """設定ファイル読取
         """
+
         self._abs_path_to_config = abs_path
-        print(f'🔧　read 📄［ {self._abs_path_to_config} ］config file...')
-        with open(self._abs_path_to_config, mode='r', encoding='utf-8') as f:
-            config_text = f.read()
+
+        try:
+            with open(self._abs_path_to_config, mode='r', encoding='utf-8') as f:
+                print(f'🔧　read 📄［ {self._abs_path_to_config} ］config file...')
+                config_text = f.read()
+
+        except FileNotFoundError:
+            if not create_if_not_exists:
+                raise
+
+            config_text = """\
+[excel]
+path = ''
+"""
+            with open(self._abs_path_to_config, mode='w', encoding='utf-8') as f:
+                print(f'🔧　write 📄［ {self._abs_path_to_config} ］config file...')
+                f.write(config_text)
+            
 
         self.config_doc_rw = toml_parse(config_text)
 
@@ -43,7 +59,7 @@ class ExshellBuilder():
         """チュートリアルの開始
         """
         PleaseInputExcelApplicationPath.play(
-                exshell_builder=exshell_builder)
+                exshell_builder=self)
 
 
     def build(self):

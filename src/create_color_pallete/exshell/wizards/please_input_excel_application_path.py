@@ -17,8 +17,10 @@ class PleaseInputExcelApplicationPath():
     @staticmethod
     def play(exshell_builder):
 
+        print() # 改行
+
         while True:
-            message = f"""\
+            text = f"""\
 🙋　Tutorial
 -------------
 このアプリケーションでは、 Excel アプリケーションを自動的に開いたり閉じたりしたいです。
@@ -26,13 +28,8 @@ class PleaseInputExcelApplicationPath():
 これに同意できる方は、後述の説明を参考に Excel アプリケーションへのファイルパスを入力してください。
 そうでない方は、[Ctrl] + [C] キーで強制終了していただくことができます。
 
-Excel アプリケーションへのファイルパスの調べ方を説明します...
+Excel アプリケーションへのファイルパスの調べ方を説明します。
 
-"""
-            print(message)
-            time.sleep(1)
-
-            message = f"""\
 ◆ Windows 11 を使っていて、Excel をすでにインストールしている方：
     タスクバーの検索ボックスに `Excel` と入力し、
     出てきた Excel のアイコンを右クリックして［ファイルの場所を開く］をクリックしてください。
@@ -40,12 +37,8 @@ Excel アプリケーションへのファイルパスの調べ方を説明し�
     📄［EXCEL.EXE］ファイルが出てくるので右クリックして［パスのコピー］をクリックしてください。
     これでクリップボードにファイルパスがコピーされました。
     これをターミナルに貼り付けてください。
-    両端にダブルクォーテーションが付いているので、ダブルクォーテーションは削除してください...
-"""
-            print(message)
-            time.sleep(1)
+    両端にダブルクォーテーションが付いているので、ダブルクォーテーションは削除してください。
 
-            message = f"""\
 ◆ それ以外の方
     がんばってください。
 
@@ -55,9 +48,15 @@ Excel アプリケーションへのファイルパスの調べ方を説明し�
     C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE
 
 Input
------
-"""
-            temporary_excel_application_path = input(message)
+-----"""
+
+            lines = text.split('\n')
+
+            for line in lines:
+                print(line)
+                time.sleep(0.05)
+
+            temporary_excel_application_path = input()
             print() # 空行
 
             # ワークブックを新規生成

@@ -44,7 +44,10 @@ def main():
             abs_path_to_workbook=Path(PATH_TO_CONTENTS).resolve())
 
     # エクシェル設定ファイル読込
-    exshell_builder.load_config(abs_path=Path(PATH_TO_EXSHELL_CONFIG).resolve())
+    exshell_builder.load_config(
+            abs_path=Path(PATH_TO_EXSHELL_CONFIG).resolve(),
+            create_if_not_exists=True)
+
     # エクシェル設定ファイルが不完全ならチュートリアル開始
     if not exshell_builder.config_is_ok():
         exshell_builder.start_tutorial()
