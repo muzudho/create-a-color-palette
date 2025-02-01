@@ -36,7 +36,7 @@ class ExshellBuilder():
 
         try:
             with open(self._abs_path_to_config, mode='r', encoding='utf-8') as f:
-                print(f'🔧　read 📄［ {self._abs_path_to_config} ］config file...')
+                print(f'🔧　Read 📄［ {self._abs_path_to_config} ］config file...')
                 config_text = f.read()
 
         except FileNotFoundError:
@@ -48,7 +48,7 @@ class ExshellBuilder():
 path = ''
 """
             with open(self._abs_path_to_config, mode='w', encoding='utf-8') as f:
-                print(f'🔧　write 📄［ {self._abs_path_to_config} ］config file...')
+                print(f'🔧　Write 📄［ {self._abs_path_to_config} ］config file...')
                 f.write(config_text)
             
 

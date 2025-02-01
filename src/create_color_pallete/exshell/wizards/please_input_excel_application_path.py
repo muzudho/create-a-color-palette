@@ -76,9 +76,7 @@ Input
 
 
             try:
-                print(f"""\
-🔧　Save 📄［ {exshell_builder.abs_path_to_workbook} ］workbook file...
-""")
+                print(f'🔧　Save 📄［ {exshell_builder.abs_path_to_workbook} ］workbook file...')
                 wb.save(exshell_builder.abs_path_to_workbook)
             
             except Exception as ex:
@@ -105,9 +103,7 @@ Input
 
 
             # エクセルを開く
-            print(f"""\
-🔧　Open virtual display...
-""")
+            print(f'🔧　Open virtual display...')
             opened_excel_process = subprocess.Popen([temporary_excel_application_path, exshell_builder.abs_path_to_workbook])   # Excel が開くことを期待
             time.sleep(1)
 
@@ -138,16 +134,12 @@ Input
 {exshell_builder.config_doc_rw['excel']['path']=}
 """)
 
-                print(f"""\
-🔧　Save 📄［ {exshell_builder.abs_path_to_config} ］config file...
-""")
+                print(f'🔧　Save 📄［ {exshell_builder.abs_path_to_config} ］config file...')
                 with open(exshell_builder.abs_path_to_config, mode='w', encoding='utf-8') as f:
                     f.write(toml_dumps(exshell_builder.config_doc_rw))
 
                 # エクセルを閉じる
-                print(f"""\
-🔧　Close virtual display...
-""")
+                print(f'🔧　Close virtual display...')
                 opened_excel_process.terminate()
                 time.sleep(1)
                 break

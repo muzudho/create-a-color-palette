@@ -68,8 +68,7 @@ class PleaseInputHue():
 🙋　Error
 ----------
 📄［ {exshell.abs_path_to_workbook} ］ファイルが既に開かれているかもしれません？
-
-問題を解決したあと、Enter キーを空打ちしてください。
+原因を取り除いたあと、Enter キーを空打ちしてください。
 
     Example of input
     ----------------
