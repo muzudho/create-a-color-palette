@@ -109,12 +109,12 @@ class OutputGradation():
 -----------------
 グラデーションを作成しました。
 
-アプリケーションを終了するなら y を、
+アプリケーションを終了するなら `exit` を、
 やり直す場合は　それ以外を入力してください。
 
     Example of input
     ----------------
-    y
+    exit
 
 Input
 -----
@@ -127,7 +127,7 @@ Input
         exshell.close_virtual_display()
 
 
-        return line == 'y'
+        return line == 'exit'
 
 
     @staticmethod
@@ -149,7 +149,7 @@ Input
         # 上限
         high = brightness
         # 下限
-        low = saturation
+        low = brightness - saturation
 
         if 255 < high:
             raise ValueError(f'{high=} Others: {brightness=} {saturation=}')
