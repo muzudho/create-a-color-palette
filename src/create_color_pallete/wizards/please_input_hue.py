@@ -5,6 +5,7 @@ import time
 from openpyxl.styles import PatternFill
 
 from src.create_color_pallete import Color, ToneSystem
+from src.create_color_pallete.exshell import Exshell
 
 
 class PleaseInputHue():
@@ -66,12 +67,10 @@ Save 📄［ {abs_path_to_contents} ］ contents file...
         wb.save(abs_path_to_contents)
 
 
-        # エクセルを開く
-        print(f"""\
-🔧　Open Excel...
-""")
-        opened_excel_process = subprocess.Popen([excel_application_path, abs_path_to_contents])   # Excel が開くことを期待
-        time.sleep(1)
+        exshell = Exshell()
+        exshell.open_virtual_display(
+                excel_application_path=excel_application_path,
+                abs_path_to_workbook=abs_path_to_contents)
 
 
         message = """\
@@ -94,11 +93,7 @@ Input
 
 
         # エクセルを閉じる
-        print(f"""\
-🔧　Close Excel...
-""")
-        opened_excel_process.terminate()
-        time.sleep(1)
+        exshell.close_virtual_display()
 
 
         return number_of_hue

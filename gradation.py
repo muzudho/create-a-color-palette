@@ -213,7 +213,7 @@ Input
     
     # 色相 [0.0, 1.0]
     cur_hue = random.uniform(0, 1)
-    step_hue = 1 / number_of_color_samples
+    step_hue = 1 / context_rw.number_of_color_samples
 #     print(f"""\
 # {step_hue=}""")
 
@@ -238,7 +238,7 @@ Input
     # cell.value = "色相内段階"
 
 
-    for index, row_th in enumerate(range(2, 2 + number_of_color_samples)):
+    for index, row_th in enumerate(range(2, 2 + context_rw.number_of_color_samples)):
 
         tone_system = ToneSystem(
                 low=low,

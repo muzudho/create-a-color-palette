@@ -107,7 +107,7 @@ Input
 
             # エクセルを開く
             print(f"""\
-🔧　Open Excel...
+🔧　Open virtual display...
 """)
             opened_excel_process = subprocess.Popen([temporary_excel_application_path, abs_path_to_contents])   # Excel が開くことを期待
             time.sleep(1)
@@ -147,7 +147,7 @@ Input
 
                 # エクセルを閉じる
                 print(f"""\
-🔧　Close Excel...
+🔧　Close virtual display...
 """)
                 opened_excel_process.terminate()
                 time.sleep(1)
