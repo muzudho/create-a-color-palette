@@ -202,16 +202,40 @@ Input
     excel_path = input(message)
     print() # 空行
 
-    excel_process = None
+    excel_is_opened = None
     is_successful = False
     if excel_path != '':
         print(f"""\
 Attempt to start Excel.""")
         excel_process = subprocess.Popen([excel_path, abs_file_path_to_write])    # Excel が開くことを期待
-        is_successful = True
+        excel_is_opened = True
 
-    if not is_successful:
-        print(f"Please open 📄［ {abs_file_path_to_write} ］ file.")
+
+    if not excel_is_opened:
+        print(f"""\
+Please open 📄［ {abs_file_path_to_write} ］ file.
+""")
+
+
+    if excel_is_opened:
+        message = f"""\
+Message
+-------
+自動的に開いた Excel アプリケーションを閉じたい場合は y を、
+そうでない場合は　それ以外を入力してください。
+
+    Example of input
+    ----------------
+    y
+
+Input
+-----
+"""
+        line = input(message)
+        print() # 空行
+
+        if line == 'y':
+            excel_process.terminate()
 
 
 def create_tone(saturation, brightness):
