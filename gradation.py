@@ -1,6 +1,7 @@
-import openpyxl as xl
 import math
+import openpyxl as xl
 import random
+import subprocess
 import traceback
 
 from openpyxl.styles import PatternFill
@@ -61,7 +62,7 @@ Input
 
     high_brightness = MAX_scalar
     low_brightness = saturation
-    mid_brightness = math.floor(high_brightness - low_brightness)
+    mid_brightness = (high_brightness + low_brightness) // 2
 
     message = f"""\
 Message
@@ -105,22 +106,26 @@ Input
 
 
     cell = ws[f'A1']
-    cell.value = "色相"
+    cell.value = "No"
 
     cell = ws[f'B1']
-    cell.value = "色相種類"
-
-    cell = ws[f'C1']
-    cell.value = "色相内段階"
-
-    cell = ws[f'D1']
     cell.value = "色"
 
-    cell = ws[f'E1']
-    cell.value = "コード"
+    cell = ws[f'C1']
+    cell.value = "ウェブ・セーフ・カラー"
+
+    # デバッグ用情報
+    # cell = ws[f'A1']
+    # cell.value = "色相"
+
+    # cell = ws[f'B1']
+    # cell.value = "色相種類"
+
+    # cell = ws[f'C1']
+    # cell.value = "色相内段階"
 
 
-    for row_th in range(2, 2 + number_of_color_samples):
+    for index, row_th in enumerate(range(2, 2 + number_of_color_samples)):
 
         tone_system = ToneSystem(
                 low=low,
@@ -145,20 +150,27 @@ Input
             print(f'{xl_color=}')
             raise
 
+        # 連番
         cell = ws[f'A{row_th}']
-        cell.value = cur_hue
+        cell.value = index
 
+        # 色
         cell = ws[f'B{row_th}']
-        cell.value = tone_system.get_phase_name()
-
-        cell = ws[f'C{row_th}']
-        cell.value = tone_system.get_value_of_hue_in_phase()
-
-        cell = ws[f'D{row_th}']
         cell.fill = pattern_fill
 
-        cell = ws[f'E{row_th}']
+        # ウェブ・セーフ・カラー
+        cell = ws[f'C{row_th}']
         cell.value = web_safe_color
+
+        # デバッグ情報
+        # cell = ws[f'A{row_th}']
+        # cell.value = cur_hue
+
+        # cell = ws[f'B{row_th}']
+        # cell.value = tone_system.get_phase_name()
+
+        # cell = ws[f'C{row_th}']
+        # cell.value = tone_system.get_value_of_hue_in_phase()
 
         cur_hue += step_hue
         if 1 < cur_hue:
@@ -167,8 +179,39 @@ Input
 
     rel_file_path_to_write = './temp/gradation.xlsx'
     path = Path(rel_file_path_to_write)
-    wb.save(rel_file_path_to_write)
-    print(f"Please look 📄［ {path.resolve()} ］ file.")
+    abs_file_path_to_write = path.resolve()
+    wb.save(abs_file_path_to_write)
+    print(f"""\
+Save 📄［ {abs_file_path_to_write} ］ file.
+""")
+
+    message = f"""\
+Message
+-------
+作成した結果を Excel アプリケーションで開きたいです。
+できれば Excel アプリケーションのファイルパスを入力してください。
+そうでなければ、そのまま Enter キーを押下してください。
+
+    Example of input
+    ----------------
+    C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE
+
+Input
+-----
+"""
+    excel_path = input(message)
+    print() # 空行
+
+    excel_process = None
+    is_successful = False
+    if excel_path != '':
+        print(f"""\
+Attempt to start Excel.""")
+        excel_process = subprocess.Popen([excel_path, abs_file_path_to_write])    # Excel が開くことを期待
+        is_successful = True
+
+    if not is_successful:
+        print(f"Please open 📄［ {abs_file_path_to_write} ］ file.")
 
 
 def create_tone(saturation, brightness):
