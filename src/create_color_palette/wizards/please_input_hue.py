@@ -4,7 +4,7 @@ import time
 
 from openpyxl.styles import PatternFill
 
-from src.create_color_pallete import Color, ToneSystem
+from src.create_color_palette import Color, ToneSystem
 
 
 class PleaseInputHue():

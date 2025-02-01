@@ -1,6 +1,6 @@
 import traceback
 
-from src.create_color_pallete import Color, ToneSystem
+from src.create_color_palette import Color, ToneSystem
 
 
 def test():

@@ -4,7 +4,7 @@ import openpyxl as xl
 from openpyxl.styles import Font, PatternFill
 from openpyxl.styles.alignment import Alignment
 
-from src.create_color_pallete import Color, ToneSystem
+from src.create_color_palette import Color, ToneSystem
 
 
 class OutputGradation():
