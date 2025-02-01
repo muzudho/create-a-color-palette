@@ -19,8 +19,8 @@ class PleaseInputBrightness():
         mid_brightness = (high_brightness + low_brightness) // 2
 
         message = f"""\
-Message
--------
+🙋　Please input
+-----------------
 明度を {low_brightness} 以上 {high_brightness} 以下の整数で入力してください。
 
     Guide

@@ -8,8 +8,8 @@ class PleaseInputSaturation():
 
     def play():
         message = f"""\
-Message
--------
+🙋　Please input
+-----------------
 彩度を 0 以上 {MAX_SCALAR} 以下の整数で入力してください。
 
     Guide

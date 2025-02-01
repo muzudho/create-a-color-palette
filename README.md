@@ -39,6 +39,16 @@ py gradation.py
 
 以下、自動的に Excel を開いたり閉じたりが行われます。（下図）  
 
-![途中](./docs/img/202502__pg__01-2247--select-hue.png)  
+![色相選択](./docs/img/202502__pg__01-2310--select-hue.png)  
+
+👆　開かれたワークシートを参考に、番号を入力してください。  
+
+![色の数指定](./docs/img/202502__pg__01-2312--number-of-colors.png)  
+
+👆　Excel が開かれないこともあります。色の数を指定してください。  
+
+![彩度の選択](./docs/img/202502__pg__01-2315--select-saturation.png)  
+
+👆　同様。  
 
 ターミナルを見たり、 Excel を見たりしてください。  
