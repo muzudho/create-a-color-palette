@@ -25,7 +25,18 @@ class Context():
 
 
     def __init__(self):
+        self._start_hue = None
         self._number_of_color_samples = None
+
+
+    @property
+    def start_hue(self):
+        return self._start_hue
+
+
+    @start_hue.setter
+    def start_hue(self, value):
+        self._start_hue = value
 
 
     @property
@@ -61,7 +72,7 @@ def main():
     while True:
 
         # 基準となる色相
-        PleaseInputHue.play(
+        context_rw.start_hue = PleaseInputHue.play(
                 exshell=exshell)
 
         # 色の数
@@ -136,7 +147,8 @@ Input
             brightness=brightness)
     
     # 色相 [0.0, 1.0]
-    cur_hue = random.uniform(0, 1)
+    #cur_hue = random.uniform(0, 1)
+    cur_hue = context_rw.start_hue
     step_hue = 1 / context_rw.number_of_color_samples
 #     print(f"""\
 # {step_hue=}""")
