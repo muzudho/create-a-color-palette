@@ -12,7 +12,48 @@ from src.create_color_pallete import Color, ToneSystem
 MAX_scalar = 255
 
 
+class Context():
+    """現在の作業状態
+    """
+
+
+    def __init__(self):
+        # ここでは、None は意志未決定、 '' は Excel アプリケーションを自動的に開かないという意志決定とします。
+        self._excel_application_path = None
+        self._opened_excel_process = None
+
+
+    @property
+    def excel_application_path(self):
+        return self._excel_application_path
+
+
+    @excel_application_path.setter
+    def excel_application_path(self, value):
+        self._excel_application_path = value
+
+
+    def is_excel_process_opened(self):
+        return self._opened_excel_process is not None
+
+
+    def set_opened_excel_process(self, value):
+        self._opened_excel_process = value
+
+
+    def terminate_opened_excel_process(self):
+        self._opened_excel_process.terminate()
+        self._opened_excel_process = None
+
+
 def main():
+    context_rw = Context()
+    while True:
+        subroutine(
+                context_rw=context_rw)
+
+
+def subroutine(context_rw):
 
     print() # 空行
 
@@ -185,7 +226,8 @@ Input
 Save 📄［ {abs_file_path_to_write} ］ file.
 """)
 
-    message = f"""\
+    if context_rw.excel_application_path is None:
+        message = f"""\
 Message
 -------
 作成した結果を Excel アプリケーションで開きたいです。
@@ -199,25 +241,28 @@ Message
 Input
 -----
 """
-    excel_path = input(message)
-    print() # 空行
+        excel_path = input(message)
+        print() # 空行
+    
+    else:
+        excel_path = context_rw.excel_application_path
 
-    excel_is_opened = None
+
     is_successful = False
     if excel_path != '':
         print(f"""\
 Attempt to start Excel.""")
-        excel_process = subprocess.Popen([excel_path, abs_file_path_to_write])    # Excel が開くことを期待
-        excel_is_opened = True
+        context_rw.set_opened_excel_process(
+            subprocess.Popen([excel_path, abs_file_path_to_write]))    # Excel が開くことを期待
 
 
-    if not excel_is_opened:
+    if context_rw.is_excel_process_opened():
         print(f"""\
 Please open 📄［ {abs_file_path_to_write} ］ file.
 """)
 
 
-    if excel_is_opened:
+    if context_rw.is_excel_process_opened():
         message = f"""\
 Message
 -------
@@ -235,7 +280,7 @@ Input
         print() # 空行
 
         if line == 'y':
-            excel_process.terminate()
+            context_rw.terminate_opened_excel_process()
 
 
 def create_tone(saturation, brightness):
