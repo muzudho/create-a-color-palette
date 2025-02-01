@@ -87,19 +87,6 @@ class Context():
         self._excel_application_path = value
 
 
-    def is_excel_process_opened(self):
-        return self._opened_excel_process is not None
-
-
-    def set_opened_excel_process(self, value):
-        self._opened_excel_process = value
-
-
-    def terminate_opened_excel_process(self):
-        self._opened_excel_process.terminate()
-        self._opened_excel_process = None
-
-
 def main():
 
     # 現在の状態を保持するオブジェクト
@@ -129,8 +116,6 @@ def main():
                     abs_path_to_exshell_config=context_rw.abs_path_to_exshell_config,
                     abs_path_to_contents=context_rw.abs_path_to_contents)
 
-            #context_rw.set_opened_excel_process(opened_excel_process)
-
         #print() # 空行
 
         # 初期化
@@ -146,14 +131,14 @@ def main():
 
         # 色の数
         context_rw.number_of_color_samples = PleaseInputNumberOfColorsYouWantToCreate.play(
-                abs_path_to_contents=context_rw.abs_path_to_contents,
-                excel_application_path=context_rw.excel_application_path)
+                exshell=exshell)
 
         subroutine(
-                context_rw=context_rw)
+                context_rw=context_rw,
+                exshell=exshell)
 
 
-def subroutine(context_rw):
+def subroutine(context_rw, exshell):
 
     message = f"""\
 Message
@@ -294,27 +279,17 @@ Input
             cur_hue -= 1
 
 
-    wb.save(context_rw.abs_path_to_contents)
-    print(f"""\
-Save 📄［ {context_rw.abs_path_to_contents} ］ file.
-""")
+    # ワークブック保存
+    exshell.save_workbook(wb=wb)
 
 
     is_successful = False
-    print(f"""\
-Attempt to start Excel.""")
-    context_rw.set_opened_excel_process(
-        subprocess.Popen([context_rw.excel_application_path, context_rw.abs_path_to_contents]))    # Excel が開くことを期待
+
+    # エクセル開く
+    exshell.open_virtual_display()
 
 
-    if context_rw.is_excel_process_opened():
-        print(f"""\
-Please open 📄［ {context_rw.abs_path_to_contents} ］ file.
-""")
-
-
-    if context_rw.is_excel_process_opened():
-        message = f"""\
+    message = f"""\
 Message
 -------
 自動的に開いた Excel アプリケーションを閉じたい場合は y を、
@@ -327,11 +302,12 @@ Message
 Input
 -----
 """
-        line = input(message)
-        print() # 空行
+    line = input(message)
+    print() # 空行
 
-        if line == 'y':
-            context_rw.terminate_opened_excel_process()
+    if line == 'y':
+        # エクセル閉じる
+        exshell.close_virtual_display()
 
 
 def create_tone(saturation, brightness):

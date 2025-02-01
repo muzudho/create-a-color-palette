@@ -63,6 +63,7 @@ class Exshell():
 """)
         # 外部プロセスを終了する（エクセルを閉じる）
         self.opened_excel_process.terminate()
+        self.opened_excel_process = None
         time.sleep(1)
 
 

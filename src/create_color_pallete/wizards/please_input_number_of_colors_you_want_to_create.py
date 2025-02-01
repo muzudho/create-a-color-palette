@@ -8,7 +8,7 @@ from openpyxl.styles import PatternFill
 class PleaseInputNumberOfColorsYouWantToCreate():
 
 
-    def play(abs_path_to_contents, excel_application_path):
+    def play(exshell):
         message = """\
 🙋　Please input
 -----------------
@@ -69,18 +69,11 @@ Input
             cell.value = '未定'
 
 
-        print(f"""\
-Save 📄［ {abs_path_to_contents} ］ contents file...
-""")
-        wb.save(abs_path_to_contents)
-
+        # ワークブック保存
+        exshell.save_workbook(wb=wb)
 
         # エクセルを開く
-        print(f"""\
-🔧　Open virtual display...
-""")
-        opened_excel_process = subprocess.Popen([excel_application_path, abs_path_to_contents])   # Excel が開くことを期待
-        time.sleep(1)
+        exshell.open_virtual_display()
 
 
         message = f"""\
@@ -101,11 +94,7 @@ Input
 
 
         # エクセルを閉じる
-        print(f"""\
-🔧　Close virtual display...
-""")
-        opened_excel_process.terminate()
-        time.sleep(1)
+        exshell.close_virtual_display()
 
 
         return number_of_color_samples
