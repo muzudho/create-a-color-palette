@@ -38,6 +38,7 @@ py gradation.py
 👆　このアプリケーションが、 Excel を自動的に開けるようになりました。  
 
 以下、自動的に Excel を開いたり閉じたりが行われます。（下図）  
+ターミナルを見たり、 Excel を見たりしてください。  
 
 ![色相選択](./docs/img/202502__pg__01-2310--select-hue.png)  
 
@@ -51,4 +52,10 @@ py gradation.py
 
 👆　同様。  
 
-ターミナルを見たり、 Excel を見たりしてください。  
+![明度の選択](./docs/img/202502__pg__01-2318--select-brightness.png)  
+
+👆　同様。  
+
+![グラデーションの出力](./docs/img/202502__pg__01-2319--output-gradation.png)  
+
+👆　グラデーションが出力されました。  
