@@ -12,7 +12,6 @@ from pathlib import Path
 from src.create_color_pallete import Color, ToneSystem
 from src.create_color_pallete.wizards import PleaseInputHue, PleaseInputNumberOfColorsYouWantToCreate
 from src.create_color_pallete.exshell import Exshell, ExshellBuilder
-from src.create_color_pallete.exshell.wizards import PleaseInputExcelApplicationPath
 
 
 PATH_TO_EXSHELL_CONFIG = './exshell_config.toml'
@@ -44,27 +43,19 @@ def main():
     exshell_builder = ExshellBuilder(
             abs_path_to_workbook=Path(PATH_TO_CONTENTS).resolve())
 
-    # 設定ファイル読込
+    # エクシェル設定ファイル読込
     exshell_builder.load_config(abs_path=Path(PATH_TO_EXSHELL_CONFIG).resolve())
-    
-    print(f"""\
-{exshell_builder.config_doc_rw=}
-{exshell_builder.config_doc_rw['excel']['path']=}
-""")
+    # エクシェル設定ファイルが不完全ならチュートリアル開始
+    if not exshell_builder.config_is_ok():
+        exshell_builder.start_tutorial()
 
+    # エクシェルの生成
+    exshell = exshell_builder.build()
 
     # 現在の状態を保持するオブジェクト
     context_rw = Context()
 
     while True:
-        if not os.path.isfile(exshell_builder.config_doc_rw['excel']['path']):
-            PleaseInputExcelApplicationPath.play(
-                    exshell_builder=exshell_builder)
-
-        # 初期化
-        exshell = Exshell(
-                excel_application_path=exshell_builder.config_doc_rw['excel']['path'],
-                abs_path_to_workbook=exshell_builder.abs_path_to_workbook)
 
         # 基準となる色相
         PleaseInputHue.play(
