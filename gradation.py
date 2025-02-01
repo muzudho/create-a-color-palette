@@ -1,7 +1,9 @@
 import math
 import openpyxl as xl
+import os
 import random
 import subprocess
+import time
 import traceback
 
 from openpyxl.styles import PatternFill
@@ -99,17 +101,23 @@ def subroutine(context_rw):
 
     print() # 空行
 
-    if context_rw.config_doc_rw['excel']['path'] == '':
-        message = f"""\
+    if not os.path.isfile(context_rw.config_doc_rw['excel']['path']):
+        while True:
+            message = f"""\
 🙋　Tutorial
 -------------
 このアプリケーションでは、 Excel アプリケーションを自動的に開いたり閉じたりしたいです。
 
 これに同意できる方は、後述の説明を参考に Excel アプリケーションへのファイルパスを入力してください。
-そうでない方は、[Ctrl] + [C] キーなどで強制終了していただくことができます。
+そうでない方は、[Ctrl] + [C] キーで強制終了していただくことができます。
 
-Excel アプリケーションへのファイルパスの調べ方を説明します。
+Excel アプリケーションへのファイルパスの調べ方を説明します...
 
+"""
+            print(message)
+            time.sleep(1)
+
+            message = f"""\
 ◆ Windows 11 を使っていて、Excel をすでにインストールしている方：
     タスクバーの検索ボックスに `Excel` と入力し、
     出てきた Excel のアイコンを右クリックして［ファイルの場所を開く］をクリックしてください。
@@ -117,8 +125,13 @@ Excel アプリケーションへのファイルパスの調べ方を説明し�
     📄［EXCEL.EXE］ファイルが出てくるので右クリックして［パスのコピー］をクリックしてください。
     これでクリップボードにファイルパスがコピーされました。
     これをターミナルに貼り付けてください。
-    両端にダブルクォーテーションが付いているので、ダブルクォーテーションは削除してください。
+    両端にダブルクォーテーションが付いているので、ダブルクォーテーションは削除してください...
 
+"""
+            print(message)
+            time.sleep(1)
+
+            message = f"""\
 ◆ それ以外の方
     がんばってください。
 
@@ -130,37 +143,38 @@ Excel アプリケーションへのファイルパスの調べ方を説明し�
 Input
 -----
 """
-        temporary_excel_application_path = input(message)
-        print() # 空行
+            temporary_excel_application_path = input(message)
+            print() # 空行
 
-        # ワークブックを新規生成
-        wb = xl.Workbook()
+            # ワークブックを新規生成
+            wb = xl.Workbook()
 
-        # ワークシート
-        ws = wb['Sheet']
+            # ワークシート
+            ws = wb['Sheet']
 
-        cell = ws[f'A1']
-        cell.value = "ありがとうございます。 Excel ファイルを開けました。"
+            cell = ws[f'A1']
+            cell.value = "ありがとうございます。 Excel ファイルを開けました。"
 
-        cell = ws[f'A2']
-        cell.value = "この画面は、プログラムの方から閉じますので、このままにしておいてください。"
+            cell = ws[f'A2']
+            cell.value = "この画面は、プログラムの方から閉じますので、このままにしておいてください。"
 
-        cell = ws[f'A3']
-        cell.value = "引き続き、プログラムの指示に従ってください。よろしくお願いします。"
+            cell = ws[f'A3']
+            cell.value = "引き続き、プログラムの指示に従ってください。よろしくお願いします。"
 
-        abs_file_path_to_write = Path('./temp/gradation.xlsx').resolve()
-        print(f"""\
+            abs_file_path_to_write = Path('./temp/gradation.xlsx').resolve()
+            print(f"""\
 🔧　Save 📄［ {abs_file_path_to_write} ］file...
 """)
-        wb.save(abs_file_path_to_write)
+            wb.save(abs_file_path_to_write)
 
-        print(f"""\
+            print(f"""\
 🔧　Open Excel...
 """)
-        context_rw.set_opened_excel_process(
-            subprocess.Popen([temporary_excel_application_path, abs_file_path_to_write]))    # Excel が開くことを期待
+            context_rw.set_opened_excel_process(
+                subprocess.Popen([temporary_excel_application_path, abs_file_path_to_write]))    # Excel が開くことを期待
+            time.sleep(1)
 
-        message = f"""\
+            message = f"""\
 🙋　Tutorial
 -------------
 Excel アプリケーションが自動的に開かれた方は `y` を、
@@ -173,22 +187,34 @@ Excel アプリケーションが自動的に開かれた方は `y` を、
 Input
 -----
 """
-        line = input(message)
-        print() # 空行
+            line = input(message)
+            print() # 空行
 
-        if line == 'y':
-            context_rw.config_doc_rw['excel']['path'] = temporary_excel_application_path
+            if line == 'y':
+                context_rw.config_doc_rw['excel']['path'] = temporary_excel_application_path
 
-            print(f"""\
+                print(f"""\
 🔧　Save 📄［ {context_rw.abs_path_to_config} ］config file...
 """)
-            with open(context_rw.abs_path_to_config, mode='w', encoding='utf-8') as f:
-                f.write(toml_dumps(context_rw.config_doc_rw))
+                with open(context_rw.abs_path_to_config, mode='w', encoding='utf-8') as f:
+                    f.write(toml_dumps(context_rw.config_doc_rw))
 
-            print(f"""\
+                print(f"""\
 🔧　Close Excel...
 """)
-            context_rw.terminate_opened_excel_process()
+                context_rw.terminate_opened_excel_process()
+                time.sleep(1)
+                break
+                
+            else:
+                message = f"""\
+🙋　Tutorial
+-------------
+もう一度、最初からやり直してください...
+
+"""
+                print(message)
+                time.sleep(1)
 
 
     message = """\
