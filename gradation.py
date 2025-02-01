@@ -12,7 +12,7 @@ from tomlkit import parse as toml_parse, dumps as toml_dumps
 
 from src.create_color_pallete import Color, ToneSystem
 
-MAX_scalar = 255
+MAX_SCALAR = 255
 
 
 class Context():
@@ -242,16 +242,16 @@ Input
     message = f"""\
 Message
 -------
-彩度を 0 以上 {MAX_scalar} 以下の整数で入力してください。
+彩度を 0 以上 {MAX_SCALAR} 以下の整数で入力してください。
 
     Guide
     -----
     *   `0` -   0 に近いほどグレー
-    * `{MAX_scalar:3}` - {MAX_scalar:3} に近いほどビビッド
+    * `{MAX_SCALAR:3}` - {MAX_SCALAR:3} に近いほどビビッド
 
     Example of input
     ----------------
-    {MAX_scalar*2//3:3}
+    {MAX_SCALAR*2//3:3}
 
 Input
 -----
@@ -261,7 +261,7 @@ Input
     print() # 空行
 
 
-    high_brightness = MAX_scalar
+    high_brightness = MAX_SCALAR
     low_brightness = saturation
     mid_brightness = (high_brightness + low_brightness) // 2
 
@@ -275,7 +275,7 @@ Message
     *   `0` - Black
     * `100` - Dark
     * `220` - Bright
-    * `{MAX_scalar:3}` - White
+    * `{MAX_SCALAR:3}` - White
 
     Example of input
     ----------------
