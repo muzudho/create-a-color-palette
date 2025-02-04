@@ -1,9 +1,9 @@
+import exshell as xs
 import traceback
 
 from pathlib import Path
 
 from src.create_color_palette.wizards import OutputGradation, PleaseInputBrightness, PleaseInputHue, PleaseInputNumberOfColorsYouWantToCreate, PleaseInputSaturation
-from src.exshell import ExshellBuilder
 
 
 PATH_TO_EXSHELL_CONFIG = './exshell_config.toml'
@@ -13,7 +13,7 @@ MAX_SCALAR = 255
 
 def main():
 
-    exshell_builder = ExshellBuilder(
+    exshell_builder = xs.ExshellBuilder(
             abs_path_to_workbook=Path(PATH_TO_CONTENTS).resolve())
 
     # エクシェル設定ファイル読込
